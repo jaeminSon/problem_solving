@@ -1,34 +1,36 @@
 def bridge_in_graph(adjacency_list):
     
-    def _bfs(node, curr_time):
+    def _preorder_dfs(node):
  
         visited[node]= True
-        time_visit[node] = curr_time
-        lowest_time[node] = curr_time
+        visit_time[node] = timer[0]
+        lowest_time[node] = timer[0]
+        timer[0]+=1
  
         for neighbor in adjacency_list[node]:
             if visited[neighbor] == False : # first visited neighbor
                 parent[neighbor] = node
-                _bfs(neighbor, curr_time+1)
+                _preorder_dfs(neighbor)
                 lowest_time[node] = min(lowest_time[node], lowest_time[neighbor])
                 
-                if lowest_time[neighbor] > time_visit[node]:
+                if lowest_time[neighbor] > visit_time[node]:
                     bridges.append((node, neighbor))
             
-            elif neighbor != parent[node]: # revisited neighbor (update node's lowest time)
-                lowest_time[node] = min(lowest_time[node], time_visit[neighbor])
+            elif neighbor != parent[node]: # revisited neighbors ignoring parent (update node's lowest time)
+                lowest_time[node] = min(lowest_time[node], visit_time[neighbor])
 
     n_nodes = len(adjacency_list)
 
     visited = [False] * n_nodes
-    time_visit = [float("Inf")] * n_nodes
+    visit_time = [float("Inf")] * n_nodes
     lowest_time = [float("Inf")] * n_nodes
     parent = [-1] * n_nodes
-
+    timer = [0]
+    
     bridges = []
     for i in range(n_nodes):
         if visited[i] == False:
-            _bfs(i, 0)
+            _preorder_dfs(i)
     
     return bridges
 
