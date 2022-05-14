@@ -3,44 +3,42 @@ from collections import deque
 
 
 def dfs_preorder(adjacency_list, root, neighbor_func):
-    visited = set()
     stack = [root]
+    marked = set([root])
     preorder = []
     while stack:
         node = stack.pop()
-        visited.add(node)
         preorder.append(node)
-        
         for ne in neighbor_func(adjacency_list, node):
-            if ne not in visited:
+            if ne not in marked:
                 stack.append(ne)
+                marked.add(ne)
     return preorder
 
 def dfs_postorder(adjacency_list, root, neighbor_func):
-    visited = set()
     stack = [root]
+    marked = set([root])
     postorder = deque()
     while stack:
         node = stack.pop()
-        visited.add(node)
         postorder.appendleft(node)
         for ne in neighbor_func(adjacency_list, node):
-            if ne not in visited:
+            if ne not in marked:
                 stack.append(ne)
-        
+                marked.add(ne)
     return list(postorder)
 
 
 def bfs(adjacency_list, root, neighbor_func):
-    visited = set()
     q = deque([root])
+    marked = set([root])
     order = []
     while q:
         node = q.popleft() # visit node 
-        visited.add(node)
         order.append(node)
         for ne in neighbor_func(adjacency_list, node):
-            if ne not in visited:
+            if ne not in marked:
+                marked.add(ne)
                 q.append(ne)
     return order
 
@@ -67,18 +65,25 @@ def postorder(root):
 
 
 if __name__=="__main__":
+
+    ###################
+    # graph structure #
+    ######   0   ######
+    ####  1     2 #####
+    ###  3 4 - 5 6 #### (node 4-5 are connected)
+    ###################
+    adjacency_list = [[1, 2], [0, 3, 4], [0, 5, 6], [1], [1, 5], [2, 4], [2]]
+    neighbor_func = lambda x,y:x[y]
+    print(dfs_preorder(adjacency_list, 0, neighbor_func)) # [0, 2, 6, 5, 4, 1, 3]
+    print(dfs_postorder(adjacency_list, 0, neighbor_func)) # [3, 1, 4, 5, 6, 2, 0]
+    print(bfs(adjacency_list, 0, neighbor_func)) # [0, 1, 2, 3, 4, 5, 6]
+
     ##################
     # tree structure #
     ######   0   #####
     ####  1     2 ####
     ###  3 4   5 6 ###
     ##################
-    adjacency_list = [[1, 2], [0, 3, 4], [0, 5, 6], [1], [1], [2], [2]]
-    neighbor_func = lambda x,y:x[y]
-    print(dfs_preorder(adjacency_list, 0, neighbor_func)) # [0, 2, 6, 5, 1, 4, 3]
-    print(dfs_postorder(adjacency_list, 0, neighbor_func)) # [3, 4, 1, 5, 6, 2, 0]
-    print(bfs(adjacency_list, 0, neighbor_func)) # [0, 1, 2, 3, 4, 5, 6]
-
     node0 = Node(0)
     node1 = Node(1, node0)
     node2 = Node(2, node0)
