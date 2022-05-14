@@ -75,9 +75,9 @@ if __name__=="__main__":
     ##################
     adjacency_list = [[1, 2], [0, 3, 4], [0, 5, 6], [1], [1], [2], [2]]
     neighbor_func = lambda x,y:x[y]
-    print(dfs_preorder(adjacency_list, 0, neighbor_func))
-    print(dfs_postorder(adjacency_list, 0, neighbor_func))
-    print(bfs(adjacency_list, 0, neighbor_func))
+    print(dfs_preorder(adjacency_list, 0, neighbor_func)) # [0, 2, 6, 5, 1, 4, 3]
+    print(dfs_postorder(adjacency_list, 0, neighbor_func)) # [3, 4, 1, 5, 6, 2, 0]
+    print(bfs(adjacency_list, 0, neighbor_func)) # [0, 1, 2, 3, 4, 5, 6]
 
     node0 = Node(0)
     node1 = Node(1, node0)
@@ -86,6 +86,6 @@ if __name__=="__main__":
     node4 = Node(4, node1)
     node5 = Node(5, node2)
     node6 = Node(6, node2)
-    print(preorder(node0))
-    print(inorder(node0))
-    print(postorder(node0))
+    print(preorder(node0)) # [0, 1, 3, 4, 2, 5, 6]
+    print(inorder(node0)) # [3, 1, 4, 0, 5, 2, 6]
+    print(postorder(node0)) # [3, 4, 1, 5, 6, 2, 0]
