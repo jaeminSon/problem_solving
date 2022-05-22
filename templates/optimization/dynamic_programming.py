@@ -33,9 +33,45 @@ def traveling_salesman(distance_matrix):
     
     return _recursive_call(0, 0)
 
+
+def bitonic_traveling_salesman(distance_matrix):
+    
+    def _recursive_call(start_LR, end_RL):
+        if dp[start_LR][end_RL] is None:
+            curr_node = 1 + max(start_LR, end_RL)
+            if curr_node == n_nodes-1:
+                dp[start_LR][end_RL] = distance_matrix[start_LR][curr_node] + distance_matrix[curr_node][end_RL]
+            else:
+                dp[start_LR][end_RL] = min(distance_matrix[start_LR][curr_node] + _recursive_call(curr_node, end_RL), 
+                                           distance_matrix[curr_node][end_RL] + _recursive_call(start_LR, curr_node))
+        
+        return dp[start_LR][end_RL]
+        
+    n_nodes = len(distance_matrix)
+    dp = [[None]*n_nodes for _ in range(n_nodes)]
+    _recursive_call(0,0)
+    
+    return dp[0][0]
+
 if __name__ == "__main__":
     X = "AGGTAB"
     Y = "GXTXAYB"
     print(longest_common_subsequence(X, Y))
     
     print(traveling_salesman([[0,1,2],[3,0,4],[5,1,0]]))
+    
+    def points2distance_matrix(list_points):
+        n_points = len(list_points)
+        distance_matrix = [[None]*n_points for _ in range(n_points)]
+        from itertools import combinations
+        for i,j in combinations(range(n_points), 2):
+            p1 = list_points[i]
+            p2 = list_points[j]
+            distance_matrix[i][j] = ((p1[0]-p2[0])**2+(p1[1]-p2[1])**2)**(1./2)
+            distance_matrix[j][i] = ((p1[0]-p2[0])**2+(p1[1]-p2[1])**2)**(1./2)
+        for i in range(n_points):
+            distance_matrix[i][i] = 0
+        
+        return distance_matrix
+ 
+    print(bitonic_traveling_salesman(points2distance_matrix([(1,1),(2,3),(3,1)])))
