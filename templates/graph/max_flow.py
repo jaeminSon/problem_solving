@@ -30,7 +30,7 @@ def edmond_karp(adjacency_matrix, source, sink):
             path_flow = min(path_flow, adjacency_matrix[parent[s]][s])
             s = parent[s]
 
-        max_flow +=  path_flow
+        max_flow += path_flow
 
         v = sink
         while(v != source):
@@ -97,6 +97,53 @@ def dinic(adjacency_list, source, sink):
     
     return max_flow
  
+def min_cost_max_flow(capacity_matrix, cost_matrix, source, sink):
+    # O(E^2V^2)
+    # cost_matrix: cost *per flow*
+    n_nodes = len(capacity_matrix)
+    parent = [None] * n_nodes
+    
+    def bellman_ford(capacity_matrix, cost_matrix, source, sink, parent):
+        # O(VE)
+        n_nodes = len(capacity_matrix)
+        dist = [float("Inf")] * n_nodes
+        dist[source] = 0
+
+        for _ in range(n_nodes - 1):
+            for u in range(n_nodes):
+                for v in range(n_nodes):
+                    if capacity_matrix[u][v] > 0 and dist[u] != float("Inf") and dist[u] + cost_matrix[u][v] < dist[v]:
+                        dist[v] = dist[u] + cost_matrix[u][v]
+                        parent[v] = u
+
+        if dist[sink] < float("Inf"):
+            return True
+        else:
+            return False  
+
+    min_cost = 0
+    max_flow = 0
+    while bellman_ford(capacity_matrix, cost_matrix, source, sink, parent):
+
+        path_flow = float("Inf")
+        s = sink
+        cost = 0
+        while s != source:
+            path_flow = min(path_flow, capacity_matrix[parent[s]][s])
+            cost += cost_matrix[parent[s]][s]
+            s = parent[s]
+
+        min_cost += path_flow * cost
+        max_flow += path_flow
+        
+        v = sink
+        while(v != source):
+            capacity_matrix[parent[v]][v] -= path_flow
+            capacity_matrix[v][parent[v]] += path_flow
+            v = parent[v]
+
+    return max_flow, min_cost
+
 def adjacency_matrix2adjacency_list_for_dinic(adjacency_matrix):
     # edge: (node, flow, capacity, index of reverse node)
     adjacency_list = [[] for i in range(len(adjacency_matrix))]
@@ -115,3 +162,4 @@ if __name__=="__main__":
     print(edmond_karp(adjacency_matrix, 0, 5))
     adjacency_matrix = [[0, 16, 13, 0, 0, 0], [0, 0, 10, 12, 0, 0], [0, 4, 0, 0, 14, 0], [0, 0, 9, 0, 0, 20], [0, 0, 0, 7, 0, 4], [0, 0, 0, 0, 0, 0]]
     print(dinic(adjacency_matrix2adjacency_list_for_dinic(adjacency_matrix), 0, 5))
+    print(min_cost_max_flow([[0,3,1,0,3],[0,0,2,0,0],[0,0,0,1,6],[0,0,0,0,2],[0,0,0,0,0]],[[0,1,0,0,2],[0,0,0,3,0],[0,0,0,0,0],[0,0,0,0,1],[0,0,0,0,0]],0,4))
