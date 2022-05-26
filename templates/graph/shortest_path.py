@@ -1,4 +1,7 @@
 import heapq
+from collections import deque
+
+
 def dijkstra(adjacency_list, s, t):
     
     
@@ -47,6 +50,31 @@ def bellman_ford(adjacency_list, s):
     
     return dist
 
+def bellman_ford_fast(adjacency_list, s):
+     
+    n_nodes = len(adjacency_list)
+    dist = [float("Inf")] * n_nodes
+    dist[s] = 0
+    pop_count = [0] * n_nodes
+    
+    in_queue = [False] * n_nodes
+    q = deque([s])
+    while q:
+        u = q.popleft()
+        in_queue[u] = False
+        pop_count[u] += 1
+        if pop_count[u] < n_nodes:
+            for v, w in adjacency_list[u]:
+                if dist[u] + w < dist[v]:
+                    dist[v] = dist[u] + w
+                    if not in_queue[v]:
+                        q.append(v)
+                        in_queue[v] = True
+        else:
+            return None # negative cycle
+
+    return dist
+
 
 def floyd_warshall(adjacency_list):
    
@@ -82,5 +110,7 @@ if __name__ == "__main__":
     """ 
     
     print(bellman_ford([[(1,-1),(2,4)],[(2,3),(3,2),(4,2)], [], [(2,5),(1,1)],[(3,-3)]], 0)) # [0, -1, 2, -2, 1]
+    print(bellman_ford_fast([[(1,-1),(2,4)],[(2,3),(3,2),(4,2)], [], [(2,5),(1,1)],[(3,-3)]], 0)) # [0, -1, 2, -2, 1]
+    print(bellman_ford_fast([[(1,-1)],[(0,-1)]], 0)) # None (negative cycle)
     print(floyd_warshall([[(1,5),(3,10)], [(2,3)], [(3,1)], []])) # [[0, 5, 8, 9], [inf, 0, 3, 4], [inf, inf, 0, 1], [inf, inf, inf, 0]]
     
