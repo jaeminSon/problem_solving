@@ -55,23 +55,24 @@ def bellman_ford_fast(adjacency_list, s):
     n_nodes = len(adjacency_list)
     dist = [float("Inf")] * n_nodes
     dist[s] = 0
-    pop_count = [0] * n_nodes
+    push_count = [0] * n_nodes
     
     in_queue = [False] * n_nodes
     q = deque([s])
     while q:
         u = q.popleft()
         in_queue[u] = False
-        pop_count[u] += 1
-        if pop_count[u] < n_nodes:
+        if push_count[u] < n_nodes:
             for v, w in adjacency_list[u]:
                 if dist[u] + w < dist[v]:
                     dist[v] = dist[u] + w
                     if not in_queue[v]:
                         q.append(v)
                         in_queue[v] = True
+                        push_count[v] += 1
         else:
             return None # negative cycle
+            
 
     return dist
 
