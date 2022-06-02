@@ -78,8 +78,9 @@ def convex_hull_trick(A, B, C, D):
     dp = [0] * n
     stack = [] # (a,b,s) where y=ax+b, x>=s
     pos = 0
-    for i in range(1, n):
-        line_seg = [B[i-1], dp[i-1] + C[i-1] if C else dp[i-1], 0]
+    for j in range(1, n):
+        intercept = dp[j-1] + C[j-1] if C else dp[j-1]
+        line_seg = [B[j-1], intercept, 0]
         while stack:
             line_seg[2] = intersection_x(stack[-1], line_seg)
             if stack[-1][2] < line_seg[2]:
@@ -99,9 +100,12 @@ def convex_hull_trick(A, B, C, D):
         # dp[i] = stack[lo-1][0] * A[i] + stack[lo-1][1]
         
         # A is monotonically increasing
-        while pos+1 < len(stack) and stack[pos+1][2] < A[i]:
+        while pos+1 < len(stack) and stack[pos+1][2] < A[j]:
             pos+=1
-        dp[i] = stack[pos][0] * A[i] + stack[pos][1]
+        dp[j] = stack[pos][0] * A[j] + stack[pos][1]
+ 
+        if D:
+            dp[j] += D[j]
  
     return dp[n-1]
 
@@ -129,5 +133,5 @@ if __name__ == "__main__":
  
     print(bitonic_traveling_salesman(points2distance_matrix([(1,1),(2,3),(3,1)])))
 
-    print(convex_hull_trick(A=[1,2,3,4,5],B=[5,4,3,2,0], C=None, D=None))
-    print(convex_hull_trick(A=[1,2,3,10,20,30],B=[6,5,4,3,2,0], C=None, D=None))
+    assert convex_hull_trick(A=[1,2,3,4,5],B=[5,4,3,2,0], C=None, D=None) == 25
+    assert convex_hull_trick(A=[1,2,3,10,20,30],B=[6,5,4,3,2,0], C=None, D=None) == 138
