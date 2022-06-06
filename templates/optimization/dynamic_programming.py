@@ -109,13 +109,68 @@ def convex_hull_trick(A, B, C, D):
  
     return dp[n-1]
 
+def divide_and_conquer(M, cost):
+    # dp[i][j] = min (k < j){dp[i-1][k] + cost[k][j]} 
+    # constraint: argmin[i][j] <= argmin[i][j+1]
+    # suppose cost is augmented (i.e. cost[0][l]=0, cost[0][t]=0)
+    
+    def _recursive(i, m, n, l, r):
+        # compute dp[i][m], ...,dp[i][n] with opt_k in [l,r]
+        if m > n:
+            return
+        else:
+            # set value for mid position
+            mid = (m+n)//2
+            opt_k = l
+            # recurrence: dp[i][j] = min (k < j){dp[i-1][k] + cost[k+1][j]} 
+            for k in range(l, min(r+1, mid)): 
+                if dp[i-1][k] + cost[k+1][mid] < dp[i][mid]:
+                    dp[i][mid] = dp[i-1][k] + cost[k+1][mid]
+                    opt_k = k
+                
+            _recursive(i, m, mid-1, l, opt_k)
+            _recursive(i, mid+1, n, opt_k, r)
+
+    N = len(cost)
+    dp = [[float("inf")]*N for _ in range(M+1)]
+    for i in range(1, N):
+        dp[1][i] = cost[1][i]
+    
+    for i in range(2, M+1):
+        _recursive(i, 1, N-1, 1, N-1)
+
+    return dp[M][N-1]
+
+def knuth_speedup(cost):
+    # dp[i][j] = min(i < k < j){dp[i][k] + dp[k][j]} + C[i][j]}  
+    # constraint: argmin[i][j-1] <= argmin[i][j] <= argmin[i+1][j]
+    
+    n = len(cost)
+    dp = [[float("inf")]*n for _ in range(n)]
+    opt_k = [[None]*n for _ in range(n)]
+            
+    # fill in dp matrix diagonally
+    for d in range(n):
+        for i in range(n-d):
+            j = i+d
+            if d < 2: # default assignment (no k exists between i and i+d)
+                opt_k[i][i+d] = i+1 # first k such that i < k
+                dp[i][i+d] = cost[i][i+d]
+            else: # core of knuth-speed-up
+                for k in range(opt_k[i][j-1], opt_k[i+1][j]):
+                    if dp[i][k] + dp[k][j] + cost[i][j] < dp[i][j]:
+                        dp[i][j] = dp[i][k] + dp[k][j] + cost[i][j]
+                        opt_k[i][j] = k
+        
+    return dp[0][n-1]
+
 
 if __name__ == "__main__":
     X = "AGGTAB"
     Y = "GXTXAYB"
-    print(longest_common_subsequence(X, Y))
+    assert longest_common_subsequence(X, Y) == 4
     
-    print(traveling_salesman([[0,1,2],[3,0,4],[5,1,0]]))
+    assert traveling_salesman([[0,1,2],[3,0,4],[5,1,0]]) == 6
     
     def points2distance_matrix(list_points):
         n_points = len(list_points)
@@ -131,7 +186,22 @@ if __name__ == "__main__":
         
         return distance_matrix
  
-    print(bitonic_traveling_salesman(points2distance_matrix([(1,1),(2,3),(3,1)])))
+    assert abs(bitonic_traveling_salesman(points2distance_matrix([(1,1),(2,3),(3,1)])) - 6.47213595499958) < 1e-6
 
     assert convex_hull_trick(A=[1,2,3,4,5],B=[5,4,3,2,0], C=None, D=None) == 25
     assert convex_hull_trick(A=[1,2,3,10,20,30],B=[6,5,4,3,2,0], C=None, D=None) == 138
+
+    import numpy as np
+    weight = np.ones((8,8), dtype=int) - np.eye(8, dtype=int)
+    n = len(weight)
+    S = [[0]*(n+1) for _ in range(n+1)]
+    subS = [[0]*(n+1) for _ in range(n+1)]
+    for i in range(1, n+1):
+        for j in range(1, n+1):
+            S[i][j] = weight[i-1][j-1] + S[i - 1][j] + S[i][j - 1] - S[i - 1][j - 1]
+    for i in range(1, n+1):
+        for j in range(i, n+1):
+            subS[i][j] = S[i-1][i-1] - S[i-1][j] - S[j][i-1] + S[j][j]
+    assert divide_and_conquer(3, subS) == 14
+
+    assert knuth_speedup([[1,2,3,4],[3,4,5,1],[1,1,1,3], [2,2,2,2]]) == 15
