@@ -49,7 +49,7 @@ class RedBlack(object):
             #            /   \
             #        black  *black  <- node (left_sibling==True)
             #        /    \  
-            #    black    black     
+            # NULLNODE    NULLNODE     
             sibling.color = "RED"
 
         def _handle_black_sibling_with_red_child(node, sibling, left_sibling):
