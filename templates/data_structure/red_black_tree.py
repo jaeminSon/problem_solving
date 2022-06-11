@@ -183,7 +183,7 @@ class RedBlack(object):
                 node.parent.parent.left.color = "BLACK"
             node.parent.color = "BLACK"
             node.parent.parent.color = "RED"
-            node = node.parent.parent
+            return node.parent.parent
 
         def _handle_black_sibling_of_parent(node, left_parent):
             #            /   \
@@ -192,11 +192,11 @@ class RedBlack(object):
             #       *red  <- node (left_parent==True)
             if left_parent:
                 if self._is_right_child(node):
-                        node = node.parent
-                        self.left_rotate(node)
+                    parent = node = node.parent
+                    self.left_rotate(node)
             else:
                 if self._is_left_child(node):
-                    node = node.parent
+                    parent = node = node.parent
                     self.right_rotate(node)
             
             node.parent.color = "BLACK"
@@ -207,21 +207,23 @@ class RedBlack(object):
             else:
                 self.left_rotate(node.parent.parent)
 
+            return parent
 
         while k!=self.root and k.parent.color == "RED":
             if self._is_right_child(k.parent):
                 sibling_of_parent = k.parent.parent.left
                 if sibling_of_parent.color == "RED":
-                    _handle_red_sibling_of_parent(k, left_parent=False)
+                    k = _handle_red_sibling_of_parent(k, left_parent=False)
                 else:
-                    _handle_black_sibling_of_parent(k, left_parent=False)
+                    k = _handle_black_sibling_of_parent(k, left_parent=False)
             elif self._is_left_child(k.parent):
                 sibling_of_parent = k.parent.parent.right
 
                 if sibling_of_parent.color == "RED":
                     _handle_red_sibling_of_parent(k, left_parent=True)
+                    k = k.parent.parent
                 else:
-                    _handle_black_sibling_of_parent(k, left_parent=True)
+                    k = _handle_black_sibling_of_parent(k, left_parent=True)
             else:
                 raise ValueError("Unknown node type.")
         self.root.color = "BLACK"
