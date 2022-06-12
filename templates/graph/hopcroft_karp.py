@@ -50,6 +50,7 @@ class BipartiteGraph(object):
                 self.matching_from_L2R[u] = v
                 return True
         
+        self.dist[u] = float("inf") # do not search again if failed
         return False
 
 if __name__ == "__main__":
