@@ -56,7 +56,7 @@ class RedBlack(object):
             #            /   \
             #        black  *black  <- node (left_sibling==True)
             #          /      
-            #        red         
+            #        red  (<- if black, make it red through rotation)      
             if left_sibling:
                 if sibling.left.color == "BLACK":
                     sibling.right.color = "BLACK"
