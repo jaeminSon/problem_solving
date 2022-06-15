@@ -4,6 +4,7 @@
 - templates: algorithm templates for problem solving
 
 ## Materials
+- [cheatsheet](https://docs.google.com/spreadsheets/d/1VoVr5ObzuaRgxEY-To-LREIzAPUTIYpfI7fH4rUAu5w/edit?usp=sharing)
 - competitive programming by steven halim (book)
 - [competitive programming](https://cp-algorithms.com/)
 - [leet code hard](https://leetcode.com/problemset/all/?difficulty=HARD&page=1)
