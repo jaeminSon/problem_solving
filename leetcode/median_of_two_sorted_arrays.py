@@ -13,8 +13,8 @@ class Solution:
         while True:
             # nums1[:i+1] and nums2[:j+1] < median
             # nums1[i+1:] and nums2[j+1:] >= median
-            i = l + (r-l) // 2
-            j = mid - (i+1) - 1 # num1[i] <= num2[j] and (i+1)+(j+1)=mid
+            i = (r+l) // 2
+            j = mid - (i+1) - 1 # num1[i] <= num2[j+1] and (i+1)+(j+1)==mid
             
             L1 = nums1[i] if i>=0 else -float("inf")
             R1 = nums1[i+1] if i+1<len(nums1) else float("inf")
@@ -23,9 +23,9 @@ class Solution:
 
             if L1 <= R2 and L2 <= R1:
                 if total % 2==0:
-                    return 1./2*(max(L1, L2) + min(R1, R2))
+                    return 1./2*(max(L1, L2) + min(R1, R2))  # len(nums1[:R1]) + len(nums2[:R2]) == (i+1) + (j+1) == mid == total / 2 (second element)
                 else:
-                    return min(R1, R2)
+                    return min(R1, R2) # len(nums1[:R1]) + len(nums2[:R2]) == (i+1) + (j+1) == mid == (total-1) / 2
             elif L1 > R2:
                 r = i - 1
             else:
