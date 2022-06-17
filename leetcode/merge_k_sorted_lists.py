@@ -21,21 +21,16 @@ class Solution:
                 heappush(front, (node.val, i, node))
                 lists[i] = lists[i].next
             
-        prev = None
+        prev = dummy = ListNode()
         while front:
             _, li, next = heappop(front)
+            prev.next = next
+            prev = next
             if lists[li] is not None:
                 heappush(front, (lists[li].val, li, lists[li]))
                 lists[li] = lists[li].next
-
-            if prev is None:
-                start = next
-                prev = next
-            else:
-                prev.next = next
-                prev = next
             
-        return start
+        return dummy.next
 
 
 a = ListNode(1)
