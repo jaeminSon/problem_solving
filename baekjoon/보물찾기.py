@@ -1,4 +1,5 @@
 import sys
+sys.setrecursionlimit(10**9)
 from collections import Counter
 
 N = int(sys.stdin.readline().rstrip())
