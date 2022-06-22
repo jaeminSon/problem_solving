@@ -1,13 +1,13 @@
 class SegmentTree:
     def __init__(self, arr):
-        N = len(arr)
+        N = len(arr) # N should be power of 2
         self.tree = [0] * 2 * N
         self.len = N
-        # arr = [1, 2, 3, 4, 5]
-        # tree = [0, 4+5+1+2+3, 4+5+1, 2+3, 4+5, 1, 2, 3, 4, 5]
+        # arr = [1, 2, 3, 4]
+        # tree = [0, 1+2+3+4, 1+2, 3+4, 1, 2, 3, 4]
         for i in range(N):
             self.tree[N+i] = arr[i]
-        for i in range(N - 1, 0, -1) :
+        for i in range(N - 1, 0, -1):
             self.tree[i] = self.tree[2*i] + self.tree[2*i+1]
             # self.tree[i] = max(self.tree[2*i], self.tree[2*i+1]) # max query
         
