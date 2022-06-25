@@ -16,11 +16,6 @@ def sum_chain(n, components, s=1):
             for chain in sum_chain(n-t, components-1, t):
                 yield [t] + chain
 
-def gcd(a, b):
-    large, small = (a, b) if a>=b else (b, a)
-    return large if small == 0 else gcd(small, large % small)
-
 if __name__=="__main__":
-    assert gcd(10,2)==2
     # print(list(all_sum_chain(5)))
     print(list(sum_chain(100,30)))
