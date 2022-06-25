@@ -9,10 +9,9 @@ max_jump = 0
 for height in list_height:
     if not stack or height > stack[-1]:
         stack.append(height)
-        max_jump = max(max_jump, len(stack))
+        max_jump = len(stack)
     else:
         index_insert = bisect.bisect_left(stack, height)
         stack[index_insert] = height
-        max_jump = max(max_jump, index_insert+1)
 
 print(max_jump)
