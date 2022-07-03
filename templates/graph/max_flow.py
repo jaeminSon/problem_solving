@@ -98,13 +98,13 @@ def dinic(adjacency_list, source, sink):
     return max_flow
  
 def min_cost_max_flow(capacity_matrix, cost_matrix, source, sink):
-    # O(E^2V^2)
-    # cost_matrix: cost *per flow*
+    # O(EV*O(bellman_ford))
+    # cost_matrix: cost *per flow* (should set cost_matrix[j][i]=-v if cost_matrix[i][j]=v)
     n_nodes = len(capacity_matrix)
     parent = [None] * n_nodes
     
     def bellman_ford(capacity_matrix, cost_matrix, source, sink, parent):
-        # O(VE)
+        # O(V^3)
         n_nodes = len(capacity_matrix)
         dist = [float("Inf")] * n_nodes
         dist[source] = 0
