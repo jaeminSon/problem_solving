@@ -99,7 +99,9 @@ def dinic(adjacency_list, source, sink):
  
 def min_cost_max_flow(capacity_matrix, cost_matrix, source, sink):
     # O(EV*O(bellman_ford))
-    # cost_matrix: cost *per flow* (should set cost_matrix[j][i]=-v if cost_matrix[i][j]=v)
+    # cost_matrix: cost *per flow* 
+    #              no default value (check capacity matrix when indexing cost matrix)
+    #              cost_matrix[j][i]=-v if cost_matrix[i][j]=v)
     n_nodes = len(capacity_matrix)
     parent = [None] * n_nodes
     
@@ -144,6 +146,74 @@ def min_cost_max_flow(capacity_matrix, cost_matrix, source, sink):
 
     return max_flow, min_cost
 
+from collections import deque, defaultdict
+def min_cost_max_flow_fast(capacity_matrix, cost_matrix, source, sink):
+    # O(EV|f|)
+    # cost_matrix: cost *per flow*
+    #              default value: Inf
+    #              cost_matrix[j][i]=-v if cost_matrix[i][j]=v
+    
+    def SPFA(capacity_matrix, cost_matrix:dict, source, sink, parent):
+        # update only updated vertices in bellman-ford
+        # average: O(E), worst: O(EV)
+        n_nodes = len(capacity_matrix)
+        dist = [float("Inf")] * n_nodes
+        dist[source] = 0
+
+        queue = deque([source])
+        while queue:
+            u = queue.popleft()
+            for v in cost_matrix[u]:
+                if capacity_matrix[u][v] > 0 and dist[u] != float("Inf") and dist[u] + cost_matrix[u][v] < dist[v]:
+                    dist[v] = dist[u] + cost_matrix[u][v]
+                    parent[v] = u
+                    queue.append(v)
+        
+        if dist[sink] < float("Inf"):
+            return True
+        else:
+            return False  
+
+    def dictfy(mat, ignore_value=float("Inf")):
+        l = []
+        for i in range(len(mat)):
+            for j in range(len(mat[0])):
+                if mat[i][j]!=ignore_value:
+                    l.append((i,j,mat[i][j]))
+        
+        d = defaultdict(dict)
+        for u, v, w in l:
+            d[u][v] = w
+        
+        return d
+
+    n_nodes = len(capacity_matrix)
+    parent = [None] * n_nodes
+    
+    min_cost = 0
+    max_flow = 0
+    
+    while SPFA(capacity_matrix, dictfy(cost_matrix), source, sink, parent):
+
+        path_flow = float("Inf")
+        s = sink
+        cost = 0
+        while s != source:
+            path_flow = min(path_flow, capacity_matrix[parent[s]][s])
+            cost += cost_matrix[parent[s]][s]
+            s = parent[s]
+
+        min_cost += path_flow * cost
+        max_flow += path_flow
+        
+        v = sink
+        while(v != source):
+            capacity_matrix[parent[v]][v] -= path_flow
+            capacity_matrix[v][parent[v]] += path_flow
+            v = parent[v]
+
+    return max_flow, min_cost
+
 def adjacency_matrix2adjacency_list_for_dinic(adjacency_matrix):
     # edge: (node, flow, capacity, index of reverse node)
     adjacency_list = [[] for i in range(len(adjacency_matrix))]
@@ -159,7 +229,8 @@ def adjacency_matrix2adjacency_list_for_dinic(adjacency_matrix):
     
 if __name__=="__main__":
     adjacency_matrix = [[0, 16, 13, 0, 0, 0], [0, 0, 10, 12, 0, 0], [0, 4, 0, 0, 14, 0], [0, 0, 9, 0, 0, 20], [0, 0, 0, 7, 0, 4], [0, 0, 0, 0, 0, 0]]
-    print(edmond_karp(adjacency_matrix, 0, 5))
+    assert edmond_karp(adjacency_matrix, 0, 5) == 23
     adjacency_matrix = [[0, 16, 13, 0, 0, 0], [0, 0, 10, 12, 0, 0], [0, 4, 0, 0, 14, 0], [0, 0, 9, 0, 0, 20], [0, 0, 0, 7, 0, 4], [0, 0, 0, 0, 0, 0]]
-    print(dinic(adjacency_matrix2adjacency_list_for_dinic(adjacency_matrix), 0, 5))
-    print(min_cost_max_flow([[0,3,1,0,3],[0,0,2,0,0],[0,0,0,1,6],[0,0,0,0,2],[0,0,0,0,0]],[[0,1,0,0,2],[0,0,0,3,0],[0,0,0,0,0],[0,0,0,0,1],[0,0,0,0,0]],0,4))
+    assert dinic(adjacency_matrix2adjacency_list_for_dinic(adjacency_matrix), 0, 5) == 23
+    assert min_cost_max_flow([[0,3,1,0,3],[0,0,2,0,0],[0,0,0,1,6],[0,0,0,0,2],[0,0,0,0,0]],[[0,1,0,0,2],[0,0,0,3,0],[0,0,0,0,0],[0,0,0,0,1],[0,0,0,0,0]],0,4) == (6,8)
+    assert min_cost_max_flow_fast([[0,3,1,0,3],[0,0,2,0,0],[0,0,0,1,6],[0,0,0,0,2],[0,0,0,0,0]],[[0,1,0,0,2],[0,0,0,3,0],[0,0,0,0,0],[0,0,0,0,1],[0,0,0,0,0]],0,4) == (6,8)
