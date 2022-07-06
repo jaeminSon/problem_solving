@@ -1,5 +1,5 @@
-import sys
-from cmath import exp,pi
+from cmath import exp, pi
+
 
 def fft(a):
     if len(a) == 1:
@@ -62,7 +62,7 @@ def fast_polynomial_multiplication(a, b, x=1):
     n = len(a)
     assert n == len(b)
     
-    new_n = just_bigger_power_2(2*n)
+    new_n = just_bigger_power_2(2*n-1)
     a_fft = fft(a+[0]*(new_n-n))
     b_fft = fft(b+[0]*(new_n-n))
     c_fft = [a_fft[i]*b_fft[i] for i in range(new_n)]
@@ -75,3 +75,4 @@ def fast_polynomial_multiplication(a, b, x=1):
 if __name__=="__main__":
     assert convolution([1,1,1,1],[1,1,1,1])==[4, 4, 4, 4]
     assert fast_polynomial_multiplication([2,1], [3,1]) == [6, 5, 1, 0]
+    assert fast_polynomial_multiplication([9, -10, 7, 6], [-5, 4, 0, -2]) == [-45, 86, -75, -20, 44, -14, -12, 0]
