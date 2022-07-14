@@ -19,25 +19,20 @@ def dfs_preorder(adjacency_list, root, neighbor_func):
 def dfs_postorder(adjacency_list, root, neighbor_func):
     # returns valid postorder sequence
     stack = [root]
-    second_visit = set()
     marked = set([root])
     postorder = []
     while stack:
         node = stack.pop()
         list_neighbors = [ne for ne in neighbor_func(adjacency_list, node) if ne not in marked]
-        if len(list_neighbors)==0: # add leaf node
+        if len(list_neighbors)==0: # add leaf node or intermediate node
             postorder.append(node)
         else:
-            if node in second_visit: # add second visit of the intermediate node
-                postorder.append(node)
-            else:
-                stack.append(node) # push node at first visit of the intermediate node
-                # push neighbors
-                for ne in list_neighbors:
-                    if ne not in marked:
-                        stack.append(ne)
-                        marked.add(ne)
-                second_visit.add(node)
+            stack.append(node) # push node at first visit of the intermediate node
+            # push neighbors
+            for ne in list_neighbors:
+                if ne not in marked:
+                    stack.append(ne)
+                    marked.add(ne)
                 
     return postorder
 
@@ -88,9 +83,9 @@ if __name__=="__main__":
     ###################
     adjacency_list = [[1, 2], [0, 3, 4], [0, 5, 6], [1], [1, 5], [2, 4], [2]]
     neighbor_func = lambda x,y:x[y]
-    print(dfs_preorder(adjacency_list, 0, neighbor_func)) # [0, 2, 6, 5, 4, 1, 3]
-    print(dfs_postorder(adjacency_list, 0, neighbor_func)) # [6, 4, 5, 2, 3, 1, 0]
-    print(bfs(adjacency_list, 0, neighbor_func)) # [0, 1, 2, 3, 4, 5, 6]
+    assert dfs_preorder(adjacency_list, 0, neighbor_func) == [0, 2, 6, 5, 4, 1, 3]
+    assert dfs_postorder(adjacency_list, 0, neighbor_func) == [6, 4, 5, 2, 3, 1, 0]
+    assert bfs(adjacency_list, 0, neighbor_func) == [0, 1, 2, 3, 4, 5, 6]
 
     ###################
     # graph structure #
@@ -99,7 +94,7 @@ if __name__=="__main__":
     ###  3 4 - 5 6 #### (node 4-5 and 3-6 are connected)
     ##   |_______|   ##
     ###################
-    print(dfs_postorder([[1, 2], [0, 3, 4], [0, 5, 6], [1,6], [1, 5], [2, 4], [2, 3]], 0, neighbor_func)) # [3, 6, 4, 5, 2, 1, 0]
+    assert dfs_postorder([[1, 2], [0, 3, 4], [0, 5, 6], [1,6], [1, 5], [2, 4], [2, 3]], 0, neighbor_func) == [3, 6, 4, 5, 2, 1, 0]
 
     ##################
     # tree structure #
@@ -114,6 +109,6 @@ if __name__=="__main__":
     node4 = Node(4, node1)
     node5 = Node(5, node2)
     node6 = Node(6, node2)
-    print(preorder(node0)) # [0, 1, 3, 4, 2, 5, 6]
-    print(inorder(node0)) # [3, 1, 4, 0, 5, 2, 6]
-    print(postorder(node0)) # [3, 4, 1, 5, 6, 2, 0]
+    assert preorder(node0) == [0, 1, 3, 4, 2, 5, 6]
+    assert inorder(node0) == [3, 1, 4, 0, 5, 2, 6]
+    assert postorder(node0) == [3, 4, 1, 5, 6, 2, 0]
