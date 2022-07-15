@@ -13,3 +13,11 @@ for _ in range(N-1):
 for ne in adj[node]:
     del adj[ne][node]
 del adj[node]
+
+# convert list -> dict of set
+adj = defaultdict(set)
+for i, neighbors in enumerate(adjacency_list):
+    adj[i].update(neighbors)
+    for ne in neighbors:
+        adj[ne].add(i)
+    
