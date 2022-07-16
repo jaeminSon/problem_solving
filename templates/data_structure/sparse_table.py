@@ -25,6 +25,7 @@ def query(sparse_table, L, R):
 if __name__ == "__main__":
     arr = [7, 2, 3, 0, 5, 10, 3, 12, 18]
     sparse_table = build_sparse_table(arr)
-    print(query(sparse_table, 0, 4))
-    print(query(sparse_table, 4, 7))
-    print(query(sparse_table, 7, 8))
+    assert query(sparse_table, 0, 0) == 7
+    assert query(sparse_table, 0, 4) == 0
+    assert query(sparse_table, 4, 7) == 3
+    assert query(sparse_table, 7, 8) == 12
