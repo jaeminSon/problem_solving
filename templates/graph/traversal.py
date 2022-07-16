@@ -1,6 +1,4 @@
-# general tree
-from collections import deque
-
+from collections import deque, defaultdict
 
 def dfs_preorder(adjacency_list, root, neighbor_func):
     # returns valid preorder sequence
@@ -72,6 +70,18 @@ def inorder(root):
 def postorder(root):
   return  postorder(root.left) + postorder(root.right) + [root.val] if root else []
 
+def mark_depth(adjacency_list, root):
+    depth = defaultdict(int)
+    stack = [(root, 0)]
+    marked = set([root])
+    while stack:
+        node, d = stack.pop()
+        depth[node] = d
+        for ne in adjacency_list[node]:
+            if ne not in marked:
+                stack.append((ne, d+1))
+                marked.add(ne)
+    return depth
 
 if __name__=="__main__":
 
@@ -112,3 +122,5 @@ if __name__=="__main__":
     assert preorder(node0) == [0, 1, 3, 4, 2, 5, 6]
     assert inorder(node0) == [3, 1, 4, 0, 5, 2, 6]
     assert postorder(node0) == [3, 4, 1, 5, 6, 2, 0]
+    
+    assert mark_depth([[1, 2], [0, 3, 4], [0, 5, 6], [1], [1], [2], [2]], 0) == {0: 0, 2: 1, 6: 2, 5: 2, 1: 1, 4: 2, 3: 2}
