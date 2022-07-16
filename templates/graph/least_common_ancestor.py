@@ -9,6 +9,7 @@ class LCA:
         self.level = [None] * (2*self.n_nodes-1)
         self.visit = [None] * (2*self.n_nodes-1)
         self.appear = [None] * self.n_nodes
+        self.depth = [None] * self.n_nodes
         
         self.step = 0
         
@@ -18,6 +19,7 @@ class LCA:
         
     def dfs(self, node, l):
         self.appear[node] = self.step
+        self.depth[node] = l
         self.visit[self.step] = node
         self.level[self.step] = l
         self.step+=1
@@ -43,7 +45,7 @@ class LCA:
                 i += 1
             j += 1    
         
-    def query(self, node1, node2):
+    def lca_query(self, node1, node2):
         if node1 == node2:
             return node1
         elif self.appear[node1] <= self.appear[node2]:
@@ -55,13 +57,23 @@ class LCA:
 
         return self.visit[min(self.sparse_table[L][j], self.sparse_table[R - (1 << j) + 1][j])]
 
+    def dist_query(self, node1, node2):
+        if node1 == node2:
+            return 0
+        else:
+            lca = self.lca_query(node1, node2)
+            return (self.depth[node1]-self.depth[lca]) + (self.depth[node2]-self.depth[lca])
+        
+
 
 if __name__=="__main__":
     lca = LCA([[1,7],[2,3,6],[],[4,5],[],[],[],[8,9],[],[]]) # directed representation of tree
     lca.preprocess()
-    assert lca.query(4,6) == 1
+    assert lca.lca_query(4,6) == 1
     
     lca = LCA([[1,7],[0,2,3,6],[1],[1,4,5],[3],[3],[1],[0,8,9],[7],[7]]) # undirected representation of tree
     lca.preprocess()
-    assert lca.query(4,6) == 1
-    assert lca.query(5,5) == 5
+    assert lca.lca_query(4,6) == 1
+    assert lca.lca_query(5,5) == 5
+    assert lca.dist_query(1,1) == 0
+    assert lca.dist_query(0,8) == 2
