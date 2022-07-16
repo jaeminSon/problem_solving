@@ -21,8 +21,8 @@ def heavy_light_decomposition(adjacency_list):
         
     n_nodes = len(adjacency_list)
     tree = {"size":[None] * n_nodes, "parent":[None] * n_nodes, "depth":[None] * n_nodes, "chain_top":[None] * n_nodes}
-    dfs(0,0,0)
-    _assign_chain_top(0,0,0)
+    dfs(0,-1,0)
+    _assign_chain_top(0,-1,0)
     return tree
 
 def least_common_ancestor(data, u, v):
@@ -33,7 +33,7 @@ def least_common_ancestor(data, u, v):
         else:
             u = data["parent"][data["chain_top"][u]]
 
-    return v if data["depth"][u] < data["depth"][v] else v # return node with lower-level
+    return u if data["depth"][u] < data["depth"][v] else v # return node with lower-level
 
 def max_node(data, u, v):
     
@@ -61,10 +61,10 @@ if __name__ == "__main__":
     ########################
     adjacency_list = [[1,2,3],[0],[0,4,5,6],[0],[2],[2],[2]]
     tree = heavy_light_decomposition(adjacency_list)
-    print(least_common_ancestor(tree, 4, 6)) # 2
-    print(least_common_ancestor(tree, 1, 6)) # 0
-    print(least_common_ancestor(tree, 1, 3)) # 0
-    print(max_node(tree, 4, 6)) # 0
-    print(max_node(tree, 1, 6)) # 0
-    print(max_node(tree, 1, 3)) # 0
+    assert least_common_ancestor(tree, 4, 6) == 2
+    assert least_common_ancestor(tree, 1, 6) == 0
+    assert least_common_ancestor(tree, 1, 3) == 0
+    assert max_node(tree, 4, 6) == 6
+    assert max_node(tree, 1, 6) == 6
+    assert max_node(tree, 1, 3) == 3
     
