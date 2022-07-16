@@ -5,7 +5,7 @@ class LCA:
         self.adjacency_list = adjacency_list
         self.n_nodes = len(adjacency_list)
     
-    def preprocess(self,):
+    def preprocess(self, root):
         self.level = [None] * (2*self.n_nodes-1)
         self.visit = [None] * (2*self.n_nodes-1)
         self.appear = [None] * self.n_nodes
@@ -13,7 +13,7 @@ class LCA:
         
         self.step = 0
         
-        self.dfs(0,0)
+        self.dfs(root,0)
         
         self.build_sparse_table()
         
@@ -68,11 +68,11 @@ class LCA:
 
 if __name__=="__main__":
     lca = LCA([[1,7],[2,3,6],[],[4,5],[],[],[],[8,9],[],[]]) # directed representation of tree
-    lca.preprocess()
+    lca.preprocess(0)
     assert lca.lca_query(4,6) == 1
     
     lca = LCA([[1,7],[0,2,3,6],[1],[1,4,5],[3],[3],[1],[0,8,9],[7],[7]]) # undirected representation of tree
-    lca.preprocess()
+    lca.preprocess(0)
     assert lca.lca_query(4,6) == 1
     assert lca.lca_query(5,5) == 5
     assert lca.dist_query(1,1) == 0
