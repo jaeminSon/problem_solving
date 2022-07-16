@@ -34,14 +34,17 @@ class LCA:
         n = 2*self.n_nodes-1
         self.sparse_table = [[0]*int(math.log2(n)+1) for _ in range(n)]
         for i in range(n):
-            self.sparse_table[i][0] = self.level[i]
+            self.sparse_table[i][0] = (self.level[i], i)
         
         j = 1
         while (1 << j) <= n:
             i = 0
             while i + (1 << j) - 1 < n:
                 # min in [i, i+2^j-1] = min(min in [i,i+2^(j-1)-1], min in [i+2^(j-1), i+2^j-1])
-                self.sparse_table[i][j] = min(self.sparse_table[i][j - 1], self.sparse_table[i + (1 << (j - 1))][j - 1])
+                if self.sparse_table[i][j - 1][0] > self.sparse_table[i + (1 << (j - 1))][j - 1][0]:
+                    self.sparse_table[i][j] = self.sparse_table[i + (1 << (j - 1))][j - 1]
+                else:
+                    self.sparse_table[i][j] = self.sparse_table[i][j - 1]
                 i += 1
             j += 1    
         
@@ -55,7 +58,10 @@ class LCA:
         
         j = int(math.log2(R - L + 1))
 
-        return self.visit[min(self.sparse_table[L][j], self.sparse_table[R - (1 << j) + 1][j])]
+        if self.sparse_table[L][j][0] > self.sparse_table[R - (1 << j) + 1][j][0]:
+            return self.visit[self.sparse_table[R - (1 << j) + 1][j][1]]
+        else:
+            return self.visit[self.sparse_table[L][j][1]]
 
     def dist_query(self, node1, node2):
         if node1 == node2:
@@ -63,7 +69,6 @@ class LCA:
         else:
             lca = self.lca_query(node1, node2)
             return (self.depth[node1]-self.depth[lca]) + (self.depth[node2]-self.depth[lca])
-        
 
 
 if __name__=="__main__":
