@@ -3,11 +3,19 @@ from collections import defaultdict
 
 N,K = [int(d) for d in sys.stdin.readline().rstrip().split()]
 
+# no weight
 adj = defaultdict(dict)
 for _ in range(N-1):
     s,e,l  = [int(d) for d in sys.stdin.readline().rstrip().split()]
     adj[s].update({e:l})
     adj[e].update({s:l})
+
+# with weight
+adj = defaultdict(dict)
+for _ in range(N-1):
+    s,e,l  = [int(d) for d in sys.stdin.readline().rstrip().split()]
+    adj[s][e] = l
+    adj[e][s] = l
 
 # remove edges
 for ne in adj[node]:
