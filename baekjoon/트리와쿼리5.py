@@ -153,12 +153,8 @@ def query(v):
             if not is_white[min_dist[u][0][1]]:
                 heappop(min_dist[u])
             else:
-                # ans = min(ans, min_dist[u][0][0] + lca.dist_query(v, u))
+                ans = min(ans, min_dist[u][0][0] + lca.dist_query(v, u))
                 break
-        tmp = N
-        if len(min_dist[u]) > 0:
-            tmp = min_dist[u][0][0] + lca.dist_query(v, u)
-        ans = min(ans, tmp);\
         u = parent[u]
     
     if ans == N:
@@ -175,9 +171,4 @@ for t, v in Q:
     if t==1:
         flip(v-1)
     else:
-        res = query(v-1)
-        if res >= N:
-            print(-1)
-        else:
-            print(res)
-
+        print(query(v-1))
