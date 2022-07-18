@@ -1,5 +1,5 @@
 import sys
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 from heapq import heappop, heappush
 
 sys.setrecursionlimit(200000)
@@ -143,59 +143,58 @@ def add_to_min_dist(elem):
         heappush(min_dist_global, elem)
         set_global.add(elem)
 
-def get_best_per_ch(node):
-    tmp = []
-    for c in children[node]:
-        if min_dist_branch[node][c]:
-            heappush(tmp, min_dist_branch[node][c][0])
-    return tmp
-
 def update_subtree(node):
-    best = [min_dist_branch[node][c][0] for c in children[node] if min_dist_branch[node][c]]
-    if len(best) > 0:
-        add_to_min_dist(min(best, key=lambda x:x[0]))
+    if len(best2[node]) > 0:
+        add_to_min_dist(best2[node][0])
 
 def update_other_subtrees(v):
-    subtrees = [min_dist_branch[v][c][0] for c in children[v] if min_dist_branch[v][c]]
-    if len(subtrees) >= 2:
-        if subtrees[0][0] < subtrees[1][0]:
-            smallest, second_small = subtrees[0], subtrees[1]  
-        else:
-            smallest, second_small = subtrees[1], subtrees[0]
-        for i in range(2, len(subtrees)):
-            if subtrees[i][0] < smallest[0]:
-                tmp = smallest
-                smallest = subtrees[i]
-                if tmp[0] < second_small[0]:
-                    second_small = tmp
-            elif subtrees[i][0] < second_small[0]: 
-                second_small = subtrees[i]
-                
+    if len(best2[v]) == 2:
+        smallest = best2[v][0]
+        second_small = best2[v][1]
         new_elem = (smallest[0]+second_small[0], smallest[1], second_small[1])
         new_elem_eq = (smallest[0]+second_small[0], second_small[1], smallest[1])
         if new_elem_eq not in set_global:                
             add_to_min_dist(new_elem)
+
+def update_dist_branch(p, ch, new_elem):
+    if new_elem not in set_dist_branch:
+        heappush(min_dist_branch[p][ch], new_elem) # O(log N)
+        set_dist_branch.add(new_elem)
+
+def update_best2(p, new_elem):
+    if len(best2[p]) == 0:
+        best2[p].append(new_elem)
+    elif len(best2[p]) == 1:
+        if best2[p][0][0] <= new_elem[0]:
+            best2[p].append(new_elem)
+        else:
+            best2[p].insert(0, new_elem)
+    elif len(best2[p]) == 2:
+        if best2[p][0][0] <= new_elem[0] and best2[p][1][0] > new_elem[0]:
+            best2[p][1] = new_elem
+        else:
+            best2[p][1] = best2[p][0]
+            best2[p][0] = new_elem
 
 def flip(v):
     is_white[v] = not is_white[v]
     if is_white[v]:
         n_white[0] += 1
         
-        update_subtree(v) # O(#children)
+        update_subtree(v) #O(1)
 
         ch = v
         p = parent[v]
         while p != -1:
             
             new_elem = (lca.dist_query(v, p), v, p)
-            if new_elem not in set_dist_branch:
-                heappush(min_dist_branch[p][ch], new_elem) # O(log N)
-                set_dist_branch.add(new_elem)
+            update_dist_branch(p, ch, new_elem)
+            update_best2(p, new_elem)
             
             if is_white[p]:
                 add_to_min_dist(new_elem) # O(log N)
             
-            update_other_subtrees(p) # O(#children)
+            update_other_subtrees(p) #O(1)
             
             ch = p
             p = parent[p]
@@ -228,6 +227,7 @@ def query():
 is_white = [False] * N
 n_white = [0]
 min_dist_branch = defaultdict(dict)
+best2 = defaultdict(list)
 def initialize(node):
     for ch in children[node]:
         min_dist_branch[node][ch] = []
