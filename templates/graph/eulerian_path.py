@@ -101,7 +101,7 @@ def get_Eulerian_path(g:defaultdict):
         cycle = _find_cycle()
         for i in range(len(cycle)-1):
             if (cycle[i]==s and cycle[i+1]==e) or (cycle[i]==e and cycle[i+1]==s):
-                return cycle[i+1:]+cycle[:i]
+                return cycle[i+1:] + cycle[1:i+1]
     
     else:
         raise ValueError("No Eulerian path exists.")
