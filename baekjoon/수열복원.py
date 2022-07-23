@@ -31,19 +31,22 @@ for _ in range(N-M+1):
     
     
 class EulerianPath:
-    def __init__(self, g, _in, _out):
-        assert set(_in.keys()) == set(_out.keys())
+    def __init__(self, g:dict, directed_edges=True):
         self.g = g
-        self._in = _in
-        self._out = _out
+        self._in = defaultdict(int)
+        self._out = defaultdict(int)
+        
+        nodes = set(g.keys()).union(set([v for e in g for v in g[e]]))
+        
+        for v in nodes:
+            self._in[v] = sum([g[j][v] for j in g if v in g[j]])
+        for v in nodes:
+            self._out[v] = sum(g[v].values())
+        self.directed_edges = directed_edges
         self.path = []
         
     def get_Eulerian_path(self):
-        if all([self._in[v]==self._out[v] for v in self._in.keys()]):
-            self.dfs(self._in.keys()[0])
-            return self.path[::-1]
-        
-        elif sum([self._in[v] == self._out[v] + 1 for v in self._in.keys()])==1 and \
+        if sum([self._in[v] == self._out[v] + 1 for v in self._in.keys()])==1 and \
              sum([self._in[v] + 1 == self._out[v] for v in self._in.keys()])==1 and \
              sum([self._in[v] == self._out[v] for v in self._in.keys()]) == len(self._in.keys())-2:
             
@@ -61,7 +64,7 @@ class EulerianPath:
         self.path.append(v)
 
 
-eulerian = EulerianPath(g, in_neighbors, out_neighbors)
+eulerian = EulerianPath(g)
 path = eulerian.get_Eulerian_path()
 
 ans = list(node2seq[path[0]])
