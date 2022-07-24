@@ -89,7 +89,7 @@ def get_Eulerian_path(g:defaultdict):
                 
                 stack.append(i)
                 
-        return cycle
+        return cycle # reversal of visit order 
 
     if all([d%2==0 for d in degree.values()]):
         return _find_cycle()
