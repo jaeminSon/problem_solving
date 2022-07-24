@@ -37,19 +37,10 @@ while len(g) > 0:
     for v in nodes:
         del g[v]
 
-cnt = 0
-for i in range(len(l)-1):
-    for j in [i, i+1]:
-        if l[j] > 0:
-            l[j]-=1
-        else:
-            l[j]+=1
-    cnt+=1
-
-remain = sum(l)
+remain = sum(l) - 2*(sum([el>0 for el in l])-1)
 assert remain % 2 ==0
 
 if remain<=2:
-    print(cnt)
+    print(len(l)-1)
 else:
-    print(cnt+(remain-2)//2)
+    print(len(l)-1+(remain-2)//2)
