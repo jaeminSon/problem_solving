@@ -42,8 +42,8 @@ def edmond_karp(n_nodes, adjacency_matrix, source, sink):
 
 N, M  = [int(d) for d in sys.stdin.readline().rstrip().split()]
 
+intermediate_nodes = []
 adj_mat = defaultdict(dict)
-n_nodes = N+1
 for _ in range(M):
     i, j, a, b, c = [int(d) for d in sys.stdin.readline().rstrip().split()]
     if i > j:
@@ -63,23 +63,50 @@ for _ in range(M):
         adj_mat[i][1] = 0
         adj_mat[N][i] = 0
     else:
-        # add hallucination node
-        adj_mat[1][n_nodes] = c
-        adj_mat[n_nodes][i] = c
-        adj_mat[n_nodes][j] = c
-        adj_mat[n_nodes][1] = 0
-        adj_mat[i][n_nodes] = 0
-        adj_mat[j][n_nodes] = 0
-        n_nodes+=1
-        adj_mat[i][n_nodes] = a
-        adj_mat[j][n_nodes] = a
-        adj_mat[n_nodes][N] = a
-        adj_mat[n_nodes][i] = 0
-        adj_mat[n_nodes][j] = 0
-        adj_mat[N][n_nodes] = 0
-        n_nodes+=1
-        adj_mat[i][j] = adj_mat[i].get(j, 0) + b
-        adj_mat[j][i] = adj_mat[j].get(i, 0) + b
+        intermediate_nodes.append((i,j,a,b,c))
+
+n_nodes = N+1
+for node in intermediate_nodes:
+    i,j,a,b,c = node
+
+    adj_mat[i][j] = adj_mat[i].get(j, 0) + b
+    adj_mat[j][i] = adj_mat[j].get(i, 0) + b
+
+    # add hallucination node (top)
+    adj_mat[1][n_nodes] = c
+    adj_mat[n_nodes][i] = c
+    adj_mat[n_nodes][j] = c
+    if i in adj_mat[1]:
+        adj_mat[1][n_nodes] += adj_mat[1][i]
+        adj_mat[n_nodes][i] += adj_mat[1][i]
+        del adj_mat[1][i]
+        del adj_mat[i][1]
+    if j in adj_mat[j]:
+        adj_mat[1][n_nodes] += adj_mat[1][j]
+        adj_mat[n_nodes][j] += adj_mat[1][j]
+        del adj_mat[1][j]
+        del adj_mat[j][1]
+    adj_mat[n_nodes][1] = 0
+    adj_mat[i][n_nodes] = 0
+    adj_mat[j][n_nodes] = 0
+    n_nodes+=1
+    # add hallucination node (bottom)
+    adj_mat[i][n_nodes] = a
+    adj_mat[j][n_nodes] = a
+    adj_mat[n_nodes][N] = a
+    if N in adj_mat[i]:
+        adj_mat[i][n_nodes] += adj_mat[i][N]
+        adj_mat[n_nodes][N] += adj_mat[i][N]
+        del adj_mat[i][N]
+        del adj_mat[N][i]
+    if N in adj_mat[j]:
+        adj_mat[j][n_nodes] += adj_mat[j][N]
+        adj_mat[n_nodes][N] += adj_mat[j][N]
+        del adj_mat[j][N]
+        del adj_mat[N][j]
+    adj_mat[n_nodes][i] = 0
+    adj_mat[n_nodes][j] = 0
+    adj_mat[N][n_nodes] = 0
+    n_nodes+=1
         
-    
 print(edmond_karp(n_nodes, adj_mat, 1, N))
