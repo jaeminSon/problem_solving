@@ -30,17 +30,13 @@ def dfs_preorder(adjacency_list, root):
                 marked.add(ne)
     return preorder
 
-l = []
+n_odd_deg_nodes = []
 while len(g) > 0:
     nodes = dfs_preorder(g,next(iter(g.keys())))
-    l.append(sum([degree[v]%2==1 for v in nodes]))
+    n_odd_deg_nodes.append(sum([degree[v]%2==1 for v in nodes]))
     for v in nodes:
         del g[v]
 
-remain = sum(l) - 2*(sum([el>0 for el in l])-1)
-assert remain % 2 ==0
-
-if remain<=2:
-    print(len(l)-1)
-else:
-    print(len(l)-1+(remain-2)//2)
+n_component_containing_odd_deg_nodes = sum([el>0 for el in n_odd_deg_nodes])
+n_remaining_odd_degree_nodes = sum(n_odd_deg_nodes) - 2*n_component_containing_odd_deg_nodes
+print(len(n_odd_deg_nodes)-1+n_remaining_odd_degree_nodes//2)
