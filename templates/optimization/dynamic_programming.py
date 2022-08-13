@@ -56,8 +56,8 @@ def bitonic_traveling_salesman(distance_matrix):
 
 def convex_hull_trick(A, B, C, D):
     # dp[i] = min(0 ≤ j < i){A[i]B[j] + dp[j]+ C[j]} + D[i] 
-    # constraint: 1. B is monotonically decreasing => O(nlogn)
-    #             2. A is monotonically increasing => O(n)
+    # constraint: B should be monotonically decreasing => O(nlogn)
+    #             (additionally) if A is monotonically increasing => O(n)
     # line segment formula: f(x) = B[j] * x + dp[j]+ C[j] (A[i] ~ x)
  
     from bisect import bisect
