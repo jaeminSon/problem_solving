@@ -58,19 +58,16 @@ class SegmentTreeLazyPropagation:
         
         if node_s <= node_e and node_s <= e and node_e >= s:
             if node_s >= s and node_e <= e: # [node_s, node_e] in [s,e]
-                if node_s != node_e: # intermediate node
-                    if op==1:
-                        self.lazy_mul[node_index] = 1
-                        self.lazy_add[node_index] = val
-                    elif op==2:
-                        self.lazy_mul[node_index] = val
-                        self.lazy_add[node_index] = 0
-                    else:
-                        self.lazy_mul[node_index] = 0
-                        self.lazy_add[node_index] = val
-                    self.propagate(node_index, node_s, node_e)
+                if op==1:
+                    self.lazy_mul[node_index] = 1
+                    self.lazy_add[node_index] = val
+                elif op==2:
+                    self.lazy_mul[node_index] = val
+                    self.lazy_add[node_index] = 0
                 else:
-                    self.tree[node_index] = self.operate(op, self.tree[node_index], val)
+                    self.lazy_mul[node_index] = 0
+                    self.lazy_add[node_index] = val
+                self.propagate(node_index, node_s, node_e)
             else: # non-overlapping node
                 mid = (node_s + node_e) // 2 
                 self.update_util(node_index * 2 + 1, node_s, mid, s, e, op, val) 
