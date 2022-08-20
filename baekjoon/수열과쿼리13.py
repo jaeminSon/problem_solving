@@ -42,14 +42,6 @@ class SegmentTreeLazyPropagation:
             self.lazy_mul[node_index] = 1
             self.lazy_add[node_index] = 0 
     
-    def operate(self, op, a, v):
-        if op==1:
-            return (a+v)%MOD
-        elif op==2:
-            return (a*v)%MOD
-        elif op==3:
-            return v
-    
     def update(self, op, s, e, val):
         self.update_util(0, 0, self.len - 1, s, e, op, val)
     
