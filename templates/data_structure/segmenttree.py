@@ -61,10 +61,10 @@ class SegmentTreeLazyPropagation:
             if s == e: # leaf node
                 self.tree[index] = arr[s]
             else:
-                mid = (s + e) // 2; 
-                self.initialize(arr, s, mid, index * 2 + 1); 
-                self.initialize(arr, mid + 1, e, index * 2 + 2); 
-                self.tree[index] = self.tree[index * 2 + 1] + self.tree[index * 2 + 2]; 
+                mid = (s + e) // 2 
+                self.initialize(arr, s, mid, index * 2 + 1) 
+                self.initialize(arr, mid + 1, e, index * 2 + 2) 
+                self.tree[index] = self.tree[index * 2 + 1] + self.tree[index * 2 + 2] 
             
     def update(self, s, e, diff):
         self.update_util(0, 0, self.len - 1, s, e, diff)
