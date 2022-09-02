@@ -1,3 +1,15 @@
+import sys
+
+sys.setrecursionlimit(200000)
+
+N = int(sys.stdin.readline().rstrip())
+    
+l = [[] for _ in range(N)]
+for _ in range(N-1):
+    s,e = [int(d) for d in sys.stdin.readline().rstrip().split()]
+    l[s-1].append(e-1)
+    l[e-1].append(s-1)
+
 def heavy_light_decomposition(adjacency_list):
     
     def dfs(curr, parent, depth):
@@ -35,36 +47,11 @@ def least_common_ancestor(tree, u, v):
 
     return u if tree["depth"][u] < tree["depth"][v] else v # return node with lower-level
 
-def max_node(tree, u, v):
-    
-    # get max-node for each chain
-    dict_max_node = {n:0 for n in set(tree["chain_top"])}
-    for node in range(len(tree["chain_top"])):
-        dict_max_node[tree["chain_top"][node]] = max(tree["chain_top"][node], node)
-    
-    # sweep until lca
-    lca = least_common_ancestor(tree, u, v)
-    ans = 0
-    for node in [u, v]:
-        while tree["chain_top"][node] != tree["chain_top"][lca]:
-            ans = max(ans, dict_max_node[tree["chain_top"][node]])
-            node = tree["parent"][tree["chain_top"][node]]
 
-    return ans
+tree = heavy_light_decomposition(l)
 
-if __name__ == "__main__":
-    ########################
-    #### tree structure ####
-    ######      0   ########
-    ####  1     2     3 ####
-    ###       4 5 6      ###
-    ########################
-    adjacency_list = [[1,2,3],[0],[0,4,5,6],[0],[2],[2],[2]]
-    tree = heavy_light_decomposition(adjacency_list)
-    assert least_common_ancestor(tree, 4, 6) == 2
-    assert least_common_ancestor(tree, 1, 6) == 0
-    assert least_common_ancestor(tree, 1, 3) == 0
-    assert max_node(tree, 4, 6) == 6
-    assert max_node(tree, 1, 6) == 6
-    assert max_node(tree, 1, 3) == 3
-    
+M = int(sys.stdin.readline().rstrip())
+Q = [[int(d) for d in sys.stdin.readline().rstrip().split()] for _ in range(M)]
+
+for s,e in Q:
+    print(least_common_ancestor(tree, s-1, e-1)+1)
