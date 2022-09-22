@@ -9,3 +9,5 @@
 - [competitive programming](https://cp-algorithms.com/)
 - [leet code hard](https://leetcode.com/problemset/all/?difficulty=HARD&page=1)
 - [baekjoon - algorithm category](https://www.acmicpc.net/problem/tags)
+- [solved.ac 문제](https://solved.ac/problems/level)
+- [softeer](https://softeer.ai/index.do)
