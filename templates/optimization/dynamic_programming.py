@@ -111,7 +111,7 @@ def convex_hull_trick(A, B, C, D):
 
 def divide_and_conquer(M, cost):
     # dp[i][j] = min (k < j){dp[i-1][k] + cost[k][j]} 
-    # constraint: argmin[i][j] <= argmin[i][j+1]
+    # constraint: argmin[i][j] <= argmin[i][j+1] or cost(a, c) + cost(b, d) <= cost(a, d) + cost(b, c) for all a <= b <= c <= d
     # suppose cost is augmented (i.e. cost[0][l]=0, cost[0][t]=0)
     
     def _recursive(i, m, n, l, r):
