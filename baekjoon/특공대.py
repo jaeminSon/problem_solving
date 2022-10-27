@@ -16,25 +16,37 @@ def convex_hull_trick(s,a,b,c):
         a1,b1,_ = lseg1
         a2,b2,_ = lseg2
         return 1.*(b2-b1)/(a1-a2)
+
+    def pop():
+        s_a.pop()
+        s_b.pop()
+        s_s.pop()
  
     n = len(s)
     dp = [0] * n
-    stack = [] # (a,b,s) where y=ax+b, x>=s
+    
+    # (a,b,s) where y=ax+b, x>=s
+    s_a = []
+    s_b = []
+    s_s = []
+    
     pos = 0
     for j in range(1, n):
         intercept = dp[j-1] + C(j-1)
         line_seg = [B(j-1), intercept, 0]
-        while stack:
-            line_seg[2] = intersection_x(stack[-1], line_seg)
-            if stack[-1][2] < line_seg[2]:
+        while s_a:
+            line_seg[2] = intersection_x((s_a[-1],s_b[-1],s_s[-1]), line_seg)
+            if s_s[-1] < line_seg[2]:
                 break
             else:
-                stack.pop()
-        stack.append(line_seg)
+                pop()
+        s_a.append(line_seg[0])
+        s_b.append(line_seg[1])
+        s_s.append(line_seg[2])
  
-        while pos+1 < len(stack) and stack[pos+1][2] < s[j]:
+        while pos+1 < len(s_a) and s_s[pos+1] < s[j]:
             pos+=1
-        dp[j] = stack[pos][0] * s[j] + stack[pos][1]
+        dp[j] = s_a[pos] * s[j] + s_b[pos]
         dp[j] += D(j)
  
     return dp[n-1]
