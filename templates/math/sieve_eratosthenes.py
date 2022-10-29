@@ -1,4 +1,4 @@
-def sieve_eratosthenes(n:int):
+def sieve_eratosthenes(n:int) -> list:
 
     is_prime = [False, False] + [True] * (n - 1)
     primes = [2]
@@ -12,8 +12,10 @@ def sieve_eratosthenes(n:int):
             for j in range(i * i, n + 1, i):
                 is_prime[j] = False
 
-    return primes
+    return primes, is_prime
 
 if __name__ == "__main__":
-    assert len(sieve_eratosthenes(10)) == 4
+    list_primes, sieve = sieve_eratosthenes(10)
+    assert len(list_primes) == 4
+    assert sieve==[False, False, True, True, False, True, False, True, False, False, False]
 
