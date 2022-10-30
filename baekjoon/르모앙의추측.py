@@ -27,35 +27,58 @@ sieve[2] = 0 # set 0 for 2
 odd_primes = sieve
 
 
-def fft(a):
-    if len(a) == 1:
-        return a
-    else:
-        a_even=fft(a[0::2])
-        a_odd=fft(a[1::2])
-        w_N=[exp(2j*pi*n/len(a)) for n in range(len(a)//2)]
-        return [a_even[n] +w_N[n]*a_odd[n] for n in range(len(a)//2)] + [a_even[n]-w_N[n]*a_odd[n] for n in range(len(a)//2)]
- 
-def inverse_fft(a):
 
-    def _inverse_fft(a):
-        if len(a) == 1:
-            return a
+def fft_inplace(v, inverse=False):
+
+    def is_power_2(val):
+        if val == 1:
+            return True
+        elif val % 2 == 1:
+            return False
         else:
-            a_even=_inverse_fft(a[0::2])
-            a_odd=_inverse_fft(a[1::2])
-            w_N=[exp(-2j*pi*n/len(a)) for n in range(len(a)//2)]
-            return [a_even[n] +w_N[n]*a_odd[n] for n in range(len(a)//2)] + [a_even[n]-w_N[n]*a_odd[n] for n in range(len(a)//2)]
-    
-    return [round(c.real / len(a)) for c in _inverse_fft(a)]
+            return is_power_2(val//2)
 
-def is_power_2(val):
-    if val == 1:
-        return True
-    elif val % 2 == 1:
-        return False
-    else:
-        return is_power_2(val//2)
+    def bit_reverse(x,n):
+        """
+        >> bit_reverse(1, 3)
+        >> 4  # (001 -> 100)
+        """
+        return sum(1<<(n-1-i) for i in range(n) if x>>i&1)
+
+    def get_n_bit(val):
+        bit = 0
+        while val > 1:
+            val >>= 1
+            bit += 1
+        return bit
+
+    def permute_vector(v):
+        reversed_indices = [bit_reverse(i, nbit)for i in range(len(v))]
+        for i_from, i_to in enumerate(reversed_indices):
+            if i_from < i_to:
+                v[i_to], v[i_from] = v[i_from], v[i_to]
+
+        return nbit
+
+    N = len(v)
+    nbit = get_n_bit(len(v))
+    permute_vector(v)
+
+    for b in range(1, nbit+1):
+        i = 1 << b
+        for j in range(0, N, i):
+            for k in range(i//2):
+                wk = exp(2j*pi*k/i) if inverse else exp(-2j*pi*k/i)
+                even = v[j+k]
+                odd = v[j+k+i//2]
+                v[j+k] = even+wk*odd
+                v[j+k+i//2] = even-wk*odd
+
+    if inverse:
+        for i in range(N):
+            v[i] = round((v[i]/N).real)
+
+    return v
 
 def just_bigger_power_2(val):
     i=0
@@ -63,20 +86,22 @@ def just_bigger_power_2(val):
         i+=1
     return 2**i
 
-def conv(a, b):
+def fast_polynomial_multiplication_inplace(a, b, x=1):
     n = len(a)
-    assert n == len(b)
     
     new_n = just_bigger_power_2(2*n-1)
-    a_fft = fft(a+[0]*(new_n-n))
-    b_fft = fft(b+[0]*(new_n-n))
+    a_fft = fft_inplace(a+[0]*(new_n-n))
+    b_fft = fft_inplace(b+[0]*(new_n-n))
     c_fft = [a_fft[i]*b_fft[i] for i in range(new_n)]
     
-    return inverse_fft(c_fft)
+    if x==1:
+        return fft_inplace(c_fft, inverse=True)
+    else:
+        return [c*(x**i) for i, c in enumerate(fft_inplace(c_fft, inverse=True))]
+
 
 odd_primes += [0]*(len(semi_primes)-len(odd_primes))
-ans = conv(odd_primes, semi_primes)
-
+ans = fast_polynomial_multiplication_inplace(odd_primes, semi_primes)
 T = int(sys.stdin.readline().rstrip())
 
 for _ in range(T):
