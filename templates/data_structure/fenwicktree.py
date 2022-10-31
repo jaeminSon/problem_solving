@@ -27,8 +27,8 @@ class FenwickTree:
 if __name__ == "__main__":
     freq = [2, 1, 1, 3, 2, 3, 4, 5, 6, 7, 8, 9]
     fwtree = FenwickTree(freq)
-    print(fwtree.query(5))
+    assert fwtree.query(5)==12
     
     freq[3] += 6
     fwtree.update(3, 6)
-    print(fwtree.query(5))
+    assert fwtree.query(5)==18
