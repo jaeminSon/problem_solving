@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 def mo(data, queries):
     # (N+Q)sqrt(N) by sorting queries efficiently
     Q = len(queries)
@@ -18,7 +16,7 @@ def mo(data, queries):
 
     add(l_sorted_queries[0][0], l_sorted_queries[0][1])
     s, e = l_sorted_queries[0]
-    dict_ans = {}
+    dict_ans = {(s,e):initial_value}
     for i in range(1, Q):
         new_s, new_e = l_sorted_queries[i]
         
