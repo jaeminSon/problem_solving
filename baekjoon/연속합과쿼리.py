@@ -1,5 +1,7 @@
 import sys
 
+MINUS_INF = -1001
+
 N = int(sys.stdin.readline().rstrip())
 l = [int(d) for d in sys.stdin.readline().rstrip().split()]
 Q = int(sys.stdin.readline().rstrip())
@@ -47,7 +49,7 @@ class SegmentTree:
                 best = max([l_best, r_best, l_best_right+r_best_left, best_left, best_right])
                 return (best_left, best_right, total, best)
         else:
-            return (-1001, -1001, -1001, -1001)
+            return (MINUS_INF, MINUS_INF, 0, MINUS_INF)
         
     def query(self, s, e):
         # [s,e]
