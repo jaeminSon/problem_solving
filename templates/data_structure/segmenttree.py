@@ -109,7 +109,55 @@ class SegmentTreeLazyPropagation:
         # [s,e]
         return self.query_util(0, 0, self.len-1, s, e)
 
+class SummationQuerySegmentTree:
+    def __init__(self, arr):
+        N = len(arr)
+        self.tree = [0] * 4 * N
+        self.lazy = [0] * 4 * N
+        self.len = N
+        self.initialize(arr, 0, N-1, 0)
+        
+    def initialize(self, arr, s, e, index) : 
+        # arr = [1, 2, 3, 4, 5]
+        # tree = [15, 6, 9, 3, 3, 4, 5, 1, 2, 0]
+        if s <= e:
+            if s == e: # leaf node
+                self.tree[index] = (arr[s], arr[s], arr[s], arr[s]) # best left, best right, total, best
+            else:
+                mid = (s + e) // 2; 
+                self.initialize(arr, s, mid, index * 2 + 1); 
+                self.initialize(arr, mid + 1, e, index * 2 + 2); 
+                l_best_left, l_best_right, l_total, l_best = self.tree[index * 2 + 1]
+                r_best_left, r_best_right, r_total, r_best = self.tree[index * 2 + 2]
+                best_left = max(l_best_left,  l_total + r_best_left)
+                best_right = max(r_best_right, r_total + l_best_right)
+                total = l_total + r_total
+                best = max([l_best, r_best, l_best_right+r_best_left, best_left, best_right])
+                self.tree[index] = (best_left, best_right, total, best)
             
+    def query_util(self, node_index, node_s, node_e, s, e): 
+
+        if node_s <= node_e and node_s <= e and node_e >= s:        
+            if node_s >= s and node_e <= e: # [node_s, node_e] in [s,e]
+                return self.tree[node_index]
+            else: # non-overlapping node
+                mid = (node_s + node_e) // 2 
+                l_best_left, l_best_right, l_total, l_best = self.query_util(2 * node_index + 1, node_s, mid, s, e)
+                r_best_left, r_best_right, r_total, r_best = self.query_util(2 * node_index + 2, mid + 1, node_e, s, e)
+                best_left = max(l_best_left,  l_total + r_best_left)
+                best_right = max(r_best_right, r_total + l_best_right)
+                total = l_total + r_total
+                best = max([l_best, r_best, l_best_right+r_best_left, best_left, best_right])
+                return (best_left, best_right, total, best)
+        else:
+            import math
+            return (-math.inf, -math.inf, 0, -math.inf)
+        
+    def query(self, s, e):
+        # [s,e]
+        return self.query_util(0, 0, self.len-1, s, e)
+
+
 if __name__ == "__main__":
     a = [1, 2, 3, 4, 5]
     segtree = SegmentTree(a)
