@@ -7,7 +7,7 @@ def miller_rabin(n:int, a:int):
     while d % 2 == 0:
         if pow(a, d, n) == n-1:
             return True
-        d /= 2
+        d //= 2
     last = pow(a, d, n)
     return last == n-1 or last == 1
 
