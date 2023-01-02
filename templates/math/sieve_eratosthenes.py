@@ -1,10 +1,9 @@
 def sieve_eratosthenes(n:int) -> list:
-
-    is_prime = [False, False] + [True] * (n - 1)
+    # sieve starts with 0
+    is_prime = [False, False, True] + [True, False] * ((n - 2) // 2)
+    if n % 2 == 1:
+        is_prime += [True]
     primes = [2]
-
-    for j in range(4, n + 1, 2):
-        is_prime[j] = False
 
     for i in range(3, n + 1, 2):
         if is_prime[i]:
