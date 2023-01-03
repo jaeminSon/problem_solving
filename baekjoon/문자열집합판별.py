@@ -1,5 +1,11 @@
-from collections import defaultdict
- 
+import sys
+
+N = int(sys.stdin.readline().rstrip())
+words = [sys.stdin.readline().rstrip() for _ in range(N)]
+
+Q = int(sys.stdin.readline().rstrip())
+queries = [sys.stdin.readline().rstrip() for _ in range(Q)]
+
 class AhoCorasick:
     def __init__(self, words):
     
@@ -61,7 +67,6 @@ class AhoCorasick:
                     queue.append(self.goto[state][ch])
          
  
- 
     def __find_next_state(self, current_state, next_input):
         answer = current_state
         ch = ord(next_input) - 97 # Ascii value of 'a' is 97
@@ -72,28 +77,25 @@ class AhoCorasick:
         return self.goto[answer][ch]
  
  
-    def search_words(self, text):
+    def has_word(self, text):
         
         text = text.lower()
  
         current_state = 0
         
-        result = defaultdict(list)
         for i in range(len(text)):
             current_state = self.__find_next_state(current_state, text[i])
             if self.out[current_state] != 0:
                 for j in range(len(self.words)):
                     if (self.out[current_state] & (1<<j)) > 0:
-                        word = self.words[j]
-                        result[word].append(i-len(word)+1)
+                        return True
  
-        return result
- 
-if __name__ == "__main__":
-    words = ["he", "she", "hers", "his"]
-    text = "ashers"
-    
-    aho_chorasick = AhoCorasick(words)
- 
-    assert aho_chorasick.search_words(text) == {'he': [2], 'she': [1], 'hers': [2]}
- 
+        return False
+
+
+aho_chorasick = AhoCorasick(words)
+for q in queries:
+    if aho_chorasick.has_word(q):
+        print("YES")
+    else:
+        print("NO")
