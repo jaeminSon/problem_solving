@@ -123,7 +123,7 @@ def divide_and_conquer(M, cost):
             mid = (m+n)//2
             opt_k = l
             # recurrence: dp[i][j] = min (k < j){dp[i-1][k] + cost[k+1][j]} 
-            for k in range(l, min(r+1, mid)): 
+            for k in range(l, min(r+1, N-1)): 
                 if dp[i-1][k] + cost[k+1][mid] < dp[i][mid]:
                     dp[i][mid] = dp[i-1][k] + cost[k+1][mid]
                     opt_k = k
