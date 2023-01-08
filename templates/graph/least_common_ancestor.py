@@ -1,6 +1,6 @@
 import math
 
-class LCA:
+class LCA_SPRASE_TABLE:
     def __init__(self, adjacency_list):
         self.adjacency_list = adjacency_list
         self.n_nodes = len(adjacency_list)
@@ -71,14 +71,72 @@ class LCA:
             return (self.depth[node1]-self.depth[lca]) + (self.depth[node2]-self.depth[lca])
 
 
+class LCA_LOGARITHM:
+    def __init__(self, adjacency_list):
+        self.adjacency_list = adjacency_list
+        self.n_nodes = len(adjacency_list)
+
+    def preprocess(self, root, n_nodes, max_height):
+        self.n_nodes = n_nodes
+        self.max_height = max_height
+
+        self.dp_parent = [[0]*n_nodes for _ in range(max_height)]
+        self.depth = [0]*n_nodes
+        self.visit = [False]*n_nodes
+
+        self.dfs(root, -1, 0)
+        
+        self.dp()
+
+    def dfs(self, curr, parent, depth):
+        self.visit[curr] = True
+        self.dp_parent[0][curr]=parent
+        self.depth[curr]=depth
+        for ch in self.adjacency_list[curr]:
+            if not self.visit[ch]:
+                self.dfs(ch, curr, depth+1)
+    
+    def dp(self):
+        for i in range(1, self.max_height):
+            for j in range(self.n_nodes):
+                self.dp_parent[i][j]=self.dp_parent[i-1][self.dp_parent[i-1][j]]
+
+    def go_up(self, node, dist):
+        for i in range(self.max_height, -1,-1):
+            if dist & (1<<i):
+                node = self.dp_parent[i][node]
+        return node
+
+    def lca_query(self, node1, node2):
+        node1=self.go_up(node1, max(0, self.depth[node1]-self.depth[node2]))
+        node2=self.go_up(node2, max(0, self.depth[node2]-self.depth[node1]))
+        if node1==node2:
+            return node1
+        else:
+            for i in range(self.max_height-1, -1, -1):
+                if self.dp_parent[i][node1] != self.dp_parent[i][node2]:
+                    node1 = self.dp_parent[i][node1]
+                    node2 = self.dp_parent[i][node2]
+            return self.dp_parent[0][node1]
+
 if __name__=="__main__":
-    lca = LCA([[1,7],[2,3,6],[],[4,5],[],[],[],[8,9],[],[]]) # directed representation of tree
+    lca = LCA_SPRASE_TABLE([[1,7],[2,3,6],[],[4,5],[],[],[],[8,9],[],[]]) # directed representation of tree
     lca.preprocess(0)
     assert lca.lca_query(4,6) == 1
+    lca = LCA_LOGARITHM([[1,7],[2,3,6],[],[4,5],[],[],[],[8,9],[],[]])
+    lca.preprocess(0, 10, 20)
+    assert lca.lca_query(4,6) == 1
     
-    lca = LCA([[1,7],[0,2,3,6],[1],[1,4,5],[3],[3],[1],[0,8,9],[7],[7]]) # undirected representation of tree
+    
+    lca = LCA_SPRASE_TABLE([[1,7],[0,2,3,6],[1],[1,4,5],[3],[3],[1],[0,8,9],[7],[7]]) # undirected representation of tree
     lca.preprocess(0)
     assert lca.lca_query(4,6) == 1
     assert lca.lca_query(5,5) == 5
     assert lca.dist_query(1,1) == 0
     assert lca.dist_query(0,8) == 2
+
+
+    lca = LCA_LOGARITHM([[1,7],[0,2,3,6],[1],[1,4,5],[3],[3],[1],[0,8,9],[7],[7]]) # undirected representation of tree
+    lca.preprocess(0, 10, 20)
+    assert lca.lca_query(4,6) == 1
+    assert lca.lca_query(5,5) == 5
