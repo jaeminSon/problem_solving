@@ -74,35 +74,6 @@ def search(pattern, txt, suffix_arr):
     else:
         return None
 
-def longest_common_prefix(txt, suffix_arr):
-    # string =     "GATAGACA$"
-    # index =      [0, 1, 2, 3, 4, 5, 6, 7, 8]
-    # suffix_arr = [8, 7, 5, 3, 1, 6, 4, 0, 2]
-    # prev_suffix =[4, 3, 0, 5, 6, 7, 1, 8, -1]
-    # plcp =       [2, 1, 0, 1, 0, 1, 0, 0, 0] 
-    prev_suffix = [0] * len(txt)
-    prev_suffix[suffix_arr[0]] = -1
-    for i in range(1, len(txt)):
-        prev_suffix[suffix_arr[i]] = suffix_arr[i-1]
-    
-
-    plcp = [0] * len(txt)
-    max_l = 0 
-    l = 0
-    for i in range(len(txt)):
-        if prev_suffix[i] == -1:
-            plcp[i] = 0
-        else:
-            while txt[i+l] == txt[prev_suffix[i]+l]:
-                l+=1
-            plcp[i] = l
-            if max_l < l:
-                max_l = l
-                lcp = txt[i:i+l]
-            l = max(l-1, 0) # plcp[i] >= plcp[i-1]-1
-    
-    return lcp
-
 def longest_common_substring(concat_txt, suffix_arr):
     # concat_txt: <str1>$<str2>#
     prev_suffix = [0] * len(concat_txt)
@@ -134,15 +105,14 @@ def suffix_array_alternative_naive(s):
 
 if __name__ == "__main__":
      
-    # string = "GATAGACA$"
-    # string = "ASJDFKSAFJKEQLKKEQLKNSFDN$"
-    string = "JAEMIN$JAEMIsdfkj#"
-    
+    string = "GATAGACA$"
     suffix_arr = suffix_array(string)
-    # suffix_arr = suffix_array_alternative_naive("GATAGACA$")
+    assert search("ACA", string, suffix_arr) == 5
     
-    # assert suffix_arr == [8, 7, 5, 3, 1, 6, 4, 0, 2]
+    suffix_arr = suffix_array_alternative_naive("GATAGACA$")
+    assert suffix_arr == [8, 7, 5, 3, 1, 6, 4, 0, 2]
     
-    # print(search("ACA", string, suffix_arr))
-    # print(longest_common_prefix(string, suffix_arr))
-    print(longest_common_substring(string, suffix_arr))
+
+    string = "JAEMIN$MMJAEMIsdfkj#"
+    suffix_arr = suffix_array(string)
+    assert longest_common_substring(string, suffix_arr) == "JAEMI"
