@@ -74,6 +74,35 @@ def search(pattern, txt, suffix_arr):
     else:
         return None
 
+def longest_substring(txt, suffix_arr):
+    # string =     "GATAGACA$"
+    # index =      [0, 1, 2, 3, 4, 5, 6, 7, 8]
+    # suffix_arr = [8, 7, 5, 3, 1, 6, 4, 0, 2]
+    # prev_suffix =[4, 3, 0, 5, 6, 7, 1, 8, -1]
+    # plcp =       [2, 1, 0, 1, 0, 1, 0, 0, 0] 
+    prev_suffix = [0] * len(txt)
+    prev_suffix[suffix_arr[0]] = -1
+    for i in range(1, len(txt)):
+        prev_suffix[suffix_arr[i]] = suffix_arr[i-1]
+    
+
+    plcp = [0] * len(txt)
+    max_l = 0 
+    l = 0
+    for i in range(len(txt)):
+        if prev_suffix[i] == -1:
+            plcp[i] = 0
+        else:
+            while txt[i+l] == txt[prev_suffix[i]+l]:
+                l+=1
+            plcp[i] = l
+            if max_l < l:
+                max_l = l
+                lcp = txt[i:i+l]
+            l = max(l-1, 0) # plcp[i] >= plcp[i-1]-1
+    
+    return lcp
+
 def longest_common_substring(concat_txt, suffix_arr):
     # concat_txt: <str1>$<str2>#
     prev_suffix = [0] * len(concat_txt)
@@ -112,6 +141,9 @@ if __name__ == "__main__":
     suffix_arr = suffix_array_alternative_naive("GATAGACA$")
     assert suffix_arr == [8, 7, 5, 3, 1, 6, 4, 0, 2]
     
+    string = "BJAEMIsNLLJJAEMIsdfkj#"
+    suffix_arr = suffix_array(string)
+    assert longest_substring(string, suffix_arr) == "JAEMIs"
 
     string = "JAEMIN$MMJAEMIsdfkj#"
     suffix_arr = suffix_array(string)
