@@ -46,6 +46,19 @@ def suffix_array(s):
     suffix array of s
     O(n * log(n)^2)
     https://louisabraham.github.io/notebooks/suffix_arrays.html
+
+    # string =     "banana"
+    # index  =     [0, 1, 2, 3, 4, 5]
+    # suffix_arr = [5, 3, 1, 0, 4, 2]
+    # ----------------------------
+    # suffix (ordered)    index   
+    # ----------------------------
+    # a                     5
+    # ana                   3
+    # anana                 1
+    # banana                0
+    # na                    4
+    # nana                  2
     """
     def update_orders(l):
         val2index = {v: i for i, v in enumerate(sorted(set(l)))}
