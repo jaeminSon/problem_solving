@@ -78,7 +78,38 @@ def suffix_array(s):
     
     index2val = {v:i for i, v in enumerate(orders)}
     return [index2val[i] for i in range(n)]
- 
+
+def longest_common_prefix(s, suffix_arr):
+    """
+    # string =     "banana"
+    # lcp: longest common prefix between sa[i] and sa[i-1]
+    # ------------------------------------
+    # suffix (ordered)    index     lcp
+    # ------------------------------------
+    # a                     5        x
+    # ana                   3        1 ('a' and 'ana')
+    # anana                 1        3 ('ana' and 'anana')
+    # banana                0        0 ('anana' and 'banana')
+    # na                    4        0 ('banana' and 'na')
+    # nana                  2        2 ('na' and 'nana')
+    """
+    rank = [0] * len(suffix_arr)
+    for i in range(len(suffix_arr)):
+        rank[suffix_arr[i]] = i
+    
+    lcp = [-1] * len(suffix_arr)
+    l = 0
+    for i in range(len(suffix_arr)):
+        k = rank[i]
+        if k > 0:
+            j = suffix_arr[k - 1]
+            while j+l < len(s) and i+l < len(s) and s[j + l] == s[i + l]:
+                l+=1
+            lcp[k] = l
+            if l > 0:
+                l-=1
+    return lcp    
+
 def search(pattern, txt, suffix_arr):
     list_str = [txt[i:] for i in suffix_arr]
     index = suffix_arr[bisect_left(list_str, pattern)]
@@ -161,3 +192,5 @@ if __name__ == "__main__":
     string = "JAEMIN$MMJAEMIsdfkj#"
     suffix_arr = suffix_array(string)
     assert longest_common_substring(string, suffix_arr) == "JAEMI"
+
+    assert longest_common_prefix("banana", suffix_array("banana")) == [-1,1,3,0,0,2]
