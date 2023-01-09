@@ -19,6 +19,17 @@ def KMP(pattern, txt):
                 i += 1
  
 def generate_partial_match_table(pattern):
+    # +---+----------+-------+------------------------+
+    # | i |  s[0:i]  | p[i]  | Matching Prefix/Suffix |
+    # +---+----------+-------+------------------------+
+    # | 0 | a        |     0 |                        |
+    # | 1 | ab       |     0 |                        |
+    # | 2 | aba      |     1 | a                      |
+    # | 3 | abab     |     2 | ab                     |
+    # | 4 | ababa    |     3 | aba                    |
+    # | 5 | ababac   |     0 |                        |
+    # | 6 | ababaca  |     1 | a                      |
+    # +---+----------+-------+------------------------+
     table = [0] * len(pattern)
  
     i = 1
