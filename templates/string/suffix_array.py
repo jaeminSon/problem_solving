@@ -137,10 +137,10 @@ def longest_common_substring(concat_txt, suffix_arr):
             plcp[i] = l
             if max_l < l and (index_split-i) * (index_split-prev_suffix[i]) < 0:
                 max_l = l
-                lcp = concat_txt[i:i+l]
+                lcs = concat_txt[i:i+l]
             l = max(l-1, 0) # plcp[i] >= plcp[i-1]-1
     
-    return lcp
+    return lcs
 
 def suffix_array_alternative_naive(s):
     return [rank for _, rank in sorted((s[i:], i) for i in range(len(s)))]
