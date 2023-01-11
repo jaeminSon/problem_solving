@@ -1,5 +1,5 @@
 from bisect import bisect_left
-from itertools import zip_longest, islice
+from itertools import chain, islice
 
 """
 # radix sort slow due to overhead
@@ -41,7 +41,7 @@ def str2int(string):
 
 """
 
-def suffix_array(s):
+def suffix_array(A):
     """
     suffix array of s
     O(n * log(n)^2)
@@ -60,24 +60,29 @@ def suffix_array(s):
     # na                    4
     # nana                  2
     """
-    def update_orders(l):
-        val2index = {v: i for i, v in enumerate(sorted(set(l)))}
-        return [val2index[v] for v in l]
+    # This implements the algorithm of Vladu and Negruşeri; see
+    # http://web.stanford.edu/class/cs97si/suffix-array.pdf
 
-    orders = update_orders(s)
-    
-    k = 1
-    n = len(s)
-    while max(orders) < n - 1:
-        orders = update_orders(
-            [a * (n + 1) + b + 1
-             for (a, b) in
-             zip_longest(orders, islice(orders, k, None),
-                         fillvalue=0)])
-        k <<= 1
-    
-    index2val = {v:i for i, v in enumerate(orders)}
-    return [index2val[i] for i in range(n)]
+    L = sorted((a, i) for i, a in enumerate(A))
+    n = len(A)
+    count = 1
+    while count < n:
+        # Invariant: L is now a list of pairs such that L[i][1] is the
+        # starting position in A of the i'th substring of length
+        # 'count' in sorted order. (Where we imagine A to be extended
+        # with dummy elements as necessary.)
+
+        P = [0] * n
+        for (r, i), (s, j) in zip(L, islice(L, 1, None)):
+            P[j] = P[i] + (r != s)
+
+        # Invariant: P[i] is now the position of A[i:i+count] in the
+        # sorted list of unique substrings of A of length 'count'.
+
+        L = sorted(chain((((P[i],  P[i+count]), i) for i in range(n - count)),
+                         (((P[i], -1), i) for i in range(n - count, n))))
+        count *= 2
+    return [i for _, i in L]
 
 def longest_common_prefix(s, suffix_arr):
     """
