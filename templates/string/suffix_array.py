@@ -83,15 +83,15 @@ def longest_common_prefix(s, suffix_arr):
     """
     # string =     "banana"
     # lcp: longest common prefix between sa[i] and sa[i-1]
-    # ------------------------------------
-    # suffix (ordered)    index     lcp
-    # ------------------------------------
-    # a                     5        x
-    # ana                   3        1 ('a' and 'ana')
-    # anana                 1        3 ('ana' and 'anana')
-    # banana                0        0 ('anana' and 'banana')
-    # na                    4        0 ('banana' and 'na')
-    # nana                  2        2 ('na' and 'nana')
+    # --------------------------------------------------------------------------------------------------
+    # suffix (ordered)    index     lcp                             rank (when alphabetically ordered)
+    # --------------------------------------------------------------------------------------------------
+    # a                     5        x                                3 (banana comes in 3rd place when ordered)      
+    # ana                   3        1 ('a' and 'ana')                2 (anana comes in 2nd place when ordered)
+    # anana                 1        3 ('ana' and 'anana')            5 (nana comes in 5th place when ordered)
+    # banana                0        0 ('anana' and 'banana')         1 (ana comes in 1st place when ordered)
+    # na                    4        0 ('banana' and 'na')            4 (na comes in 4th place when ordered)
+    # nana                  2        2 ('na' and 'nana')              0 (a comes in 0th place when ordered)
     """
     rank = [0] * len(suffix_arr)
     for i in range(len(suffix_arr)):
