@@ -8,9 +8,9 @@ class UnionFind:
             self.rank[i] = 0
 
     def op_find(self, k):
-        if self.parent_node[k] == k:
-            return k
-        return self.op_find(self.parent_node[k])
+        if self.parent_node[k] != k:
+            self.parent_node[k] = self.op_find(self.parent_node[k])
+        return self.parent_node[k]
 
     def op_union(self, a, b):
         x = self.op_find(a)
