@@ -1,9 +1,11 @@
 class UnionFind:
     parent_node = {}
+    rank = {}
 
     def make_set(self, u):
         for i in u:
             self.parent_node[i] = i
+            self.rank[i] = 0
 
     def op_find(self, k):
         if self.parent_node[k] == k:
@@ -13,7 +15,14 @@ class UnionFind:
     def op_union(self, a, b):
         x = self.op_find(a)
         y = self.op_find(b)
-        self.parent_node[x] = y
+        
+        if self.rank[x] > self.rank[y]:
+            self.parent_node[y] = x
+        elif self.rank[x] < self.rank[y]:
+            self.parent_node[x] = y
+        else:
+            self.parent_node[y] = x
+            self.rank[x] += 1
 
 class Arpa:
     # range-min-query in [L,R]
