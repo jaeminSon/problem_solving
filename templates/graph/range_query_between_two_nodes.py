@@ -43,6 +43,7 @@ def initialize_segtree():
 
     for i in range(L-1, 0, -1):
         segtree[i] = max(segtree[i * 2], segtree[i * 2 + 1])
+        # segtree[i] = segtree[i * 2] + segtree[i * 2 + 1]
 
 def update(i, w):
     i+=L
@@ -50,6 +51,7 @@ def update(i, w):
     i = i // 2
     while i > 0:
         segtree[i] = max(segtree[i * 2], segtree[i * 2 + 1])
+        # segtree[i] = segtree[i * 2] + segtree[i * 2 + 1]
         i = i // 2
 
 def range_query(l, r):
@@ -60,9 +62,11 @@ def range_query(l, r):
     while l<=r:
         if l%2==1:
             ret = max(ret, segtree[l])
+            # ret += segtree[l]
             l+=1
         if r%2==0:
             ret = max(ret, segtree[r])
+            # ret += segtree[r]
             r-=1
         l = l // 2
         r = r // 2
@@ -76,12 +80,14 @@ def range_query_between_nodes(u, v):
         if tree["size"][tree["chain_top"][u]] < tree["size"][tree["chain_top"][v]]:
             u, v = v, u
         ans = max(ans, range_query(pos_seg[tree["chain_top"][v]], pos_seg[v]))
+        # ans += range_query(pos_seg[tree["chain_top"][v]], pos_seg[v])
         v = tree["parent"][tree["chain_top"][v]]
     
     # same chain
     if pos_seg[v] < pos_seg[u]:
         u, v = v, u
-    ans = max(ans, range_query(pos_seg[u]+1, pos_seg[v])) # exclude lca (edge)
+    ans = max(ans, range_query(pos_seg[u]+1, pos_seg[v])) # exclude lca when edge weight is assined to child
+    # ans += range_query(pos_seg[u], pos_seg[v])) # sum query from u to v
 
     return ans
 
