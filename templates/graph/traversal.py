@@ -34,6 +34,15 @@ def dfs_postorder(adjacency_list, root, neighbor_func):
                 
     return postorder
 
+def retrieve_connected_trees(adjacency_list, root, neighbor_func):
+    list_trees = []
+    not_marked = set(range(len(adjacency_list)))
+    while len(not_marked) > 0:
+        root = not_marked.pop()
+        nodes = dfs_preorder(adjacency_list, root, neighbor_func)
+        list_trees.append(nodes)
+        not_marked -= set(nodes)
+    return list_trees
 
 def bfs(adjacency_list, root, neighbor_func):
     # returns valid bfs sequence
