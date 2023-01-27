@@ -146,22 +146,25 @@ def knuth_speedup(cost):
     # constraint: argmin[i][j-1] <= argmin[i][j] <= argmin[i+1][j]
     
     n = len(cost)
-    dp = [[float("inf")]*n for _ in range(n)]
-    opt_k = [[None]*n for _ in range(n)]
-            
+    dp = [[0]*n for _ in range(n)]
+    opt_k = [[0]*n for _ in range(n)]
+    
+    # default assignment (no k exists between i and i+d)
+    for i in range(n-1):
+        opt_k[i][i+1] = i+1 # first k such that i < k
+        dp[i][i+1] = cost[i][i+1]
+
     # fill in dp matrix diagonally
-    for d in range(n):
+    for d in range(2, n):
         for i in range(n-d):
             j = i+d
-            if d < 2: # default assignment (no k exists between i and i+d)
-                opt_k[i][i+d] = i+1 # first k such that i < k
-                dp[i][i+d] = cost[i][i+d]
-            else: # core of knuth-speed-up
-                for k in range(opt_k[i][j-1], opt_k[i+1][j]):
-                    if dp[i][k] + dp[k][j] + cost[i][j] < dp[i][j]:
-                        dp[i][j] = dp[i][k] + dp[k][j] + cost[i][j]
-                        opt_k[i][j] = k
-        
+            dp[i][j] = float("inf")
+            for k in range(opt_k[i][j-1], opt_k[i+1][j]+1):
+                val = dp[i][k] + dp[k][j] + cost[i][j]
+                if val < dp[i][j]:
+                    dp[i][j] = val
+                    opt_k[i][j] = k
+    
     return dp[0][n-1]
 
 
