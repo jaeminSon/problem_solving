@@ -157,6 +157,68 @@ class SummationQuerySegmentTree:
         # [s,e]
         return self.query_util(0, 0, self.len-1, s, e)
 
+class Node:
+    def __init__(self, s, l, r, b):  # sum, left-sum, right-sum, best
+        self.s = s
+        self.l = l
+        self.r = r
+        self.b = b
+
+class BestPrefixSumSegmentTree:
+
+    def __init__(self, bias):
+        # bias should be power of 2 and greater than max number of elements
+        self.bias = bias
+        self.n_trees = 2*bias
+        self.tree = [Node(0, 0, 0, 0) for _ in range(self.n_trees)]  # 0th tree empty
+
+    def clear(self):
+        for i in range(self.n_trees):
+            self.replace(i, 0)
+
+    def merge(self, a, b):
+        # t <- a + b
+        s = a.s + b.s
+        return Node(s, max(a.l, a.s + b.l), max(b.r, a.r + b.s), max(a.r + b.l, a.b, b.b, s))
+
+    def increment(self, i, v):
+        self.tree[i].s += v
+        self.tree[i].l += v
+        self.tree[i].r += v
+        self.tree[i].b += v
+
+    def replace(self, i, v):
+        self.tree[i].s = v
+        self.tree[i].l = v
+        self.tree[i].r = v
+        self.tree[i].b = v
+
+    def update(self, i, v):
+        i += self.bias
+        self.increment(i, v)
+        # self.replace(x, v)
+        while i > 1:
+            if i % 2 == 0:  # left child
+                self.tree[i//2] = self.merge(self.tree[i], self.tree[i+1])
+            else:  # right child
+                self.tree[i//2] = self.merge(self.tree[i-1], self.tree[i])
+            i //= 2
+
+    def query(self, l, r):
+        # [l, r]
+        l += self.bias
+        r += self.bias
+        ret = Node(0, 0, 0, 0)
+        while l <= r:
+            if l % 2 == 1:
+                ret = self.merge(self.tree[l], ret)
+                l += 1
+            if r % 2 == 1:
+                ret = self.merge(ret, self.tree[r])
+                r -= 1
+            l //= 2
+            r //= 2
+        return ret
 
 if __name__ == "__main__":
     a = [1, 2, 3, 4, 5]
