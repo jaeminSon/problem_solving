@@ -1,4 +1,3 @@
-import sys
 from collections import defaultdict
 
 MAX_N = 100_001
