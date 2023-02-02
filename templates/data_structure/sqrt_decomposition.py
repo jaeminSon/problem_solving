@@ -59,7 +59,7 @@ class SqrtDecompositionSearchNonZero:
         for i in range(len(self.block)-1, -1, -1):
             if self.block[i] > 0:
                 for j in range(self.block_size-1, -1, -1):
-                    if self.arr[i*self.block_size + j] > 0:
+                    if i*self.block_size + j < len(self.arr) and self.arr[i*self.block_size + j] > 0:
                         return i*self.block_size + j
         
 if __name__=="__main__":
