@@ -4,7 +4,7 @@ class SqrtDecomposition:
         self.n = len(arr)
         self.arr = arr
         self.block_size = int(self.n**(1./2))
-        self.block = [0] * (self.block_size + 1)
+        self.block = [0] * (self.n // self.block_size + 1)
     
         # O(n)
         for i in range(self.n):
@@ -43,7 +43,7 @@ class SqrtDecompositionSearchNonZero:
         self.n = len(arr)
         self.arr = arr # distribution
         self.block_size = int(self.n**(1./2))
-        self.block = [0] * (self.block_size+1)
+        self.block = [0] * (self.n // self.block_size + 1)
     
         # O(n)
         for i in range(self.n):
