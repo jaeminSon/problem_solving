@@ -4,7 +4,6 @@ from collections import deque
 
 def dijkstra(adjacency_list, s, t):
     
-    
     n_nodes = len(adjacency_list)
     distance = [float("Inf")] * n_nodes
     distance[s] = 0
@@ -15,6 +14,8 @@ def dijkstra(adjacency_list, s, t):
     heapq.heapify(pq)
     while pq:
         cost, curr = heapq.heappop(pq)
+        if curr == t:
+            break
         visited.add(curr)
         for next, cost in adjacency_list[curr]:
             if next not in visited and distance[next] > distance[curr] + cost: 
