@@ -1,9 +1,9 @@
 def kruskal_mst(adjacency_list):
 
     def find(parent:list, i:int):
-        if parent[i] == i:
-            return i
-        return find(parent, parent[i])
+        if parent[i] != i:
+            parent[i] = find(parent, parent[i])
+        return parent[i]
  
     def union(parent, rank, x, y):
         xroot = find(parent, x)
