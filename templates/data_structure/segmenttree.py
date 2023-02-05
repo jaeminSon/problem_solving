@@ -93,7 +93,7 @@ class SegmentTreeLazyPropagation:
                 if node_s != node_e: # intermediate node
                     self.lazy[node_index * 2 + 1] += diff 
                     self.lazy[node_index * 2 + 2] += diff 
-            else: # non-overlapping node
+            else: # [node_s, node_e] and [s,e] overlapping but not inclusive
                 mid = (node_s + node_e) // 2 
                 self.update_util(node_index * 2 + 1, node_s, mid, s, e, diff) 
                 self.update_util(node_index * 2 + 2, mid + 1, node_e, s, e, diff) 
@@ -105,7 +105,7 @@ class SegmentTreeLazyPropagation:
         if node_s <= node_e and node_s <= e and node_e >= s:        
             if node_s >= s and node_e <= e: # [node_s, node_e] in [s,e]
                 return self.tree[node_index] 
-            else: # non-overlapping node
+            else: # [node_s, node_e] and [s,e] overlapping but not inclusive
                 mid = (node_s + node_e) // 2 
                 return self.query_util(2 * node_index + 1, node_s, mid, s, e) + self.query_util(2 * node_index + 2, mid + 1, node_e, s, e)
         else:
@@ -149,9 +149,9 @@ class SummationQuerySegmentTreeNoUpdate:
     def query_util(self, node_index, node_s, node_e, s, e): 
 
         if node_s <= node_e and node_s <= e and node_e >= s:        
-            if node_s >= s and node_e <= e: # [node_s, node_e] in [s,e]
+            if node_s >= s and node_e <= e: # [node_s, node_e] inclusive in [s,e]
                 return self.tree[node_index]
-            else: # non-overlapping node
+            else: # [node_s, node_e] and [s,e] overlapping but not inclusive
                 mid = (node_s + node_e) // 2 
                 l_best_left, l_best_right, l_total, l_best = self.query_util(2 * node_index + 1, node_s, mid, s, e)
                 r_best_left, r_best_right, r_total, r_best = self.query_util(2 * node_index + 2, mid + 1, node_e, s, e)
@@ -160,7 +160,7 @@ class SummationQuerySegmentTreeNoUpdate:
                 total = l_total + r_total
                 best = max([l_best, r_best, l_best_right+r_best_left, best_left, best_right])
                 return (best_left, best_right, total, best)
-        else:
+        else: # non-overlapping node
             return (-float("inf"), -float("inf"), 0, -float("inf"))
         
     def query(self, s, e):
