@@ -49,11 +49,17 @@ class SegmentTreeLazyPropagation:
     # summation query
     def __init__(self, arr):
         N = len(arr)
-        self.tree = [0] * 4 * N
-        self.lazy = [0] * 4 * N
+        self.tree = [0] * 2 * self.just_bigger_power_2(N)
+        self.lazy = [0] * 2 * self.just_bigger_power_2(N)
         self.len = N
         self.initialize(arr, 0, N-1, 0)
         
+    def just_bigger_power_2(self, val):
+        i=0
+        while 2**i < val:
+            i+=1
+        return 2**i
+
     def initialize(self, arr, s, e, index) : 
         # arr = [1, 2, 3, 4, 5]
         # tree = [15, 6, 9, 3, 3, 4, 5, 1, 2, 0]
@@ -112,11 +118,16 @@ class SegmentTreeLazyPropagation:
 class SummationQuerySegmentTree:
     def __init__(self, arr):
         N = len(arr)
-        self.tree = [0] * 4 * N
-        self.lazy = [0] * 4 * N
+        self.tree = [0] * 2 * self.just_bigger_power_2(N)
         self.len = N
         self.initialize(arr, 0, N-1, 0)
         
+    def just_bigger_power_2(self, val):
+        i=0
+        while 2**i < val:
+            i+=1
+        return 2**i
+    
     def initialize(self, arr, s, e, index) : 
         # arr = [1, 2, 3, 4, 5]
         # tree = [15, 6, 9, 3, 3, 4, 5, 1, 2, 0]
