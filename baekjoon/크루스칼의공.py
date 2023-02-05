@@ -48,7 +48,7 @@ while True:
     for i, (s, t, w) in enumerate(edges):
         op_count = i + 1
         union(parent, n_nodes, s, t)
-        for index_query in mid2query[i+1]:
+        for index_query in mid2query[op_count]:
             if find(parent, queries[index_query][0]) == find(parent, queries[index_query][1]):
                 ans[index_query] = [w, n_nodes[parent[s]]]
                 r[index_query] = op_count - 1
