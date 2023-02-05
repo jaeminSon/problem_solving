@@ -161,8 +161,7 @@ class SummationQuerySegmentTreeNoUpdate:
                 best = max([l_best, r_best, l_best_right+r_best_left, best_left, best_right])
                 return (best_left, best_right, total, best)
         else:
-            import math
-            return (-math.inf, -math.inf, 0, -math.inf)
+            return (-float("inf"), -float("inf"), 0, -float("inf"))
         
     def query(self, s, e):
         # [s,e]
