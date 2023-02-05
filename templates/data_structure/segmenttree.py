@@ -115,7 +115,7 @@ class SegmentTreeLazyPropagation:
         # [s,e]
         return self.query_util(0, 0, self.len-1, s, e)
 
-class SummationQuerySegmentTree:
+class SummationQuerySegmentTreeNoUpdate:
     def __init__(self, arr):
         N = len(arr)
         self.tree = [0] * 2 * self.just_bigger_power_2(N)
@@ -175,7 +175,7 @@ class Node:
         self.r = r
         self.b = b
 
-class BestPrefixSumSegmentTree:
+class SummationQuerySegmentTreeUpdate:
 
     def __init__(self, bias):
         # bias should be power of 2 and greater than max number of elements
