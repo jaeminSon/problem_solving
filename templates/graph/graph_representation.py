@@ -3,6 +3,12 @@ from collections import defaultdict
 
 N,K = [int(d) for d in sys.stdin.readline().rstrip().split()]
 
+# list without weight
+adj = [[] for _ in range(N-1)]
+for _ in range(N-1):
+    s,e = [int(d)-1 for d in sys.stdin.readline().rstrip().split()]
+    adj[s].append(e)
+
 # no weight (uniform weight)
 adj = defaultdict(dict)
 for _ in range(N-1):
