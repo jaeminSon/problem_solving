@@ -86,8 +86,9 @@ def range_query_between_nodes(u, v):
     # same chain
     if pos_seg[v] < pos_seg[u]:
         u, v = v, u
-    ans = max(ans, range_query(pos_seg[u]+1, pos_seg[v])) # exclude lca when edge weight is assined to child
-    # ans += range_query(pos_seg[u], pos_seg[v])) # sum query from u to v
+    ans = max(ans, range_query(pos_seg[u]+1, pos_seg[v])) # exclude lca when edge weight is assigned to child
+    # ans = max(ans, range_query(pos_seg[u], pos_seg[v]))
+    # ans += range_query(pos_seg[u], pos_seg[v]) # sum query from u to v
 
     return ans
 
