@@ -11,8 +11,8 @@ def heavy_light_decomposition(adjacency_list):
         tree["size"][curr] = 1
         for v in adjacency_list[curr]:
             if v!=parent:
-                tree["size"][curr] += dfs(v, curr)
-        return tree["size"][curr]
+                dfs(v, curr)
+                tree["size"][curr] += tree["size"][v]
         
     def _assign_chain_top(curr, parent, chain_top):
         pos_seg[curr] = count[0]
