@@ -6,15 +6,34 @@ segtree = [0] * (2*L)
 
 def heavy_light_decomposition(adjacency_list):
         
-    def dfs(curr, parent):
+    def dfs_recursive(curr, parent):
         tree["parent"][curr] = parent
         tree["size"][curr] = 1
         for v in adjacency_list[curr]:
             if v!=parent:
-                dfs(v, curr)
+                dfs_recursive(v, curr)
                 tree["size"][curr] += tree["size"][v]
+
+    def dfs_for_loop(root):
+        stack = [root]
+        marked = set([root])
+        while stack:
+            node = stack.pop()
+            list_neighbors = [ne for ne in adjacency_list[node] if ne not in marked]
+            if len(list_neighbors)==0:
+                
+                for ne in adjacency_list[node]:
+                    if ne != tree["parent"][node]:
+                        tree["size"][node] += tree["size"][ne]
+            else:
+                stack.append(node) 
+                for ne in list_neighbors:
+                    if ne not in marked:
+                        tree["parent"][ne] = node
+                        stack.append(ne)
+                        marked.add(ne)
         
-    def _assign_chain_top(curr, parent, chain_top):
+    def _assign_chain_top_recursive(curr, parent, chain_top):
         pos_seg[curr] = count[0]
         count[0] += 1
         
@@ -22,17 +41,37 @@ def heavy_light_decomposition(adjacency_list):
         list_child = [v for v in adjacency_list[curr] if v!=parent]
         if len(list_child) > 0: # intermediate node
             node_heavy_edge = max(list_child, key=lambda x:tree["size"][x])
-            _assign_chain_top(node_heavy_edge, curr, chain_top) # remain top for heavy edge
+            _assign_chain_top_recursive(node_heavy_edge, curr, chain_top) # remain top for heavy edge
             for v in adjacency_list[curr]:
                 if v!=parent and v!=node_heavy_edge:
-                    _assign_chain_top(v, curr, v) # light edge (new top)
+                    _assign_chain_top_recursive(v, curr, v) # light edge (new top)
         
+    def assign_chain_top(root):
+        step = 0
+        stack = [(root, root, root)]
+        while stack:
+            curr, parent, chain_top = stack.pop()
+            tree["chain_top"][curr] = chain_top
+            pos_seg[curr] = step
+            step += 1
+
+            list_child = [v for v in adjacency_list[curr] if v != parent]
+            if len(list_child) > 0:
+                node_heavy_edge = max(list_child, key=lambda x: tree["size"][x])
+                for v in adjacency_list[curr]:
+                    if v != parent and v != node_heavy_edge:
+                        stack.append((v, curr, v))
+                stack.append((node_heavy_edge, curr, chain_top))
+
     n_nodes = len(adjacency_list)
-    tree = {"size":[None] * n_nodes, "parent":[None] * n_nodes, "chain_top":[None] * n_nodes}
-    dfs(0,0)
+    # tree = {"size":[None] * n_nodes, "parent":[None] * n_nodes, "chain_top":[None] * n_nodes}
+    # dfs_recursive(0,0)
+    tree = {"size":[1] * n_nodes, "parent":[0] * n_nodes, "chain_top":[0] * n_nodes}
+    dfs_for_loop(0)
     count = [0]
     pos_seg = [0] * n_nodes
-    _assign_chain_top(0,0,0)
+    # _assign_chain_top_recursive(0,0,0)
+    assign_chain_top(0)
     return tree, pos_seg
 
 def initialize_segtree():
