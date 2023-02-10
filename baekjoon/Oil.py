@@ -12,7 +12,11 @@ for _ in range(n):
 
 def ccw(p1, p2):
     x2,y2,x3,y3=p1[1],p1[0],p2[1],p2[0]
-    return x2*y3-y2*x3
+    val = x2*y3-y2*x3
+    if val != 0:
+        return val
+    else:
+        return p2[2] - p1[2]
 
 def get_best_at(i):
     x0, x1, y, w = l_p[i]
@@ -27,12 +31,14 @@ def get_best_at(i):
                         stack[k] = [x-xx0, yy-y, ww]
                         stack[k+1] = [x-xx1, yy-y, -ww]
                     elif y > yy:
-                        stack[k] = [xx0-x, y-yy, ww]
-                        stack[k+1] = [xx1-x, y-yy, -ww]
+                        stack[k] = [xx0-x, y-yy, -ww]
+                        stack[k+1] = [xx1-x, y-yy, ww]
                     k+=2
         
+        stack_used = stack[:k]
+        stack_used.sort(key=cmp_to_key(ccw))
         curr_w = w
-        for _, _, ws in sorted(stack[:k], key=cmp_to_key(ccw)):
+        for _, _, ws in stack_used:
             best = max(best, curr_w)
             curr_w += ws
     
