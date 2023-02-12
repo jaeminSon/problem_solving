@@ -13,16 +13,17 @@ def generate_tree(tree_size):
     return [[0,0,0]]+ [[i<<1, i<<1|1, 0] for i in range(1, tree_size // 2)] + [[0,0,0] for _ in range(tree_size // 2)]  # dummy first element
 
 def update(tree, node, s, e, increment, index):
+    tree[node][2] += increment
     if s != e: 
         mid = (s + e) // 2
         left_ch, right_ch, val = tree[node]
         if index <= mid: # update left child
             tree[node][0] = len(tree)
-            tree.append([tree[left_ch][0], tree[left_ch][1], tree[left_ch][2] + increment])
+            tree.append([tree[left_ch][0], tree[left_ch][1], tree[left_ch][2]])
             update(tree, tree[node][0], s, mid, increment, index)
         else: # update right child
             tree[node][1] = len(tree)
-            tree.append([tree[right_ch][0], tree[right_ch][1], tree[right_ch][2] + increment])
+            tree.append([tree[right_ch][0], tree[right_ch][1], tree[right_ch][2]])
             update(tree, tree[node][1], mid + 1, e, increment, index)
 
 def query(tree, node, s, e, l, r):
@@ -68,7 +69,6 @@ if __name__=="__main__":
         root.append(new_root)
         tree.append([tree[prev_root][0], tree[prev_root][1], tree[prev_root][2]]) # initialize with prev root
         for y in x2y[i]:
-            tree[new_root][2] += 1 # increment value
             update(tree, new_root, 0, MAX_N-1, 1, y) # add log(len(tree)) nodes at best
     # answer query (# points inside [1,2]x[1,3])
     ans = 0
@@ -96,7 +96,7 @@ if __name__=="__main__":
         prev_root = root[-1]
         new_root = len(tree)
         root.append(new_root)
-        tree.append([tree[prev_root][0], tree[prev_root][1], tree[prev_root][2] + 1])
+        tree.append([tree[prev_root][0], tree[prev_root][1], tree[prev_root][2]])
         update(tree, new_root, 0, L-1, 1, shrinked_arr[i])
 
     # 2nd smallest element in [1,3] == 3
