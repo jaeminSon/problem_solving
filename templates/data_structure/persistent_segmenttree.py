@@ -36,18 +36,30 @@ def query(tree, node, s, e, l, r):
         left_ch, right_ch, val = tree[node]
         return query(tree, left_ch, s, mid, l, r) + query(tree, right_ch, mid + 1, e, l, r)
 
+def get_kth(tree, next_node, prev_node, s, e, k):
+    if s == e:
+        return s
+    else:
+        left_size = tree[tree[next_node][0]][2] - tree[tree[prev_node][0]][2]
+        mid = (s + e) // 2
+        if k <= left_size:
+            return get_kth(tree, tree[next_node][0], tree[prev_node][0], s, mid, k)
+        else:
+            return get_kth(tree, tree[next_node][1], tree[prev_node][1], mid+1, e, k-left_size)
+
 if __name__=="__main__":
 
+    ##################################
+    # count #points inside [1,2]x[1,3]
+    ##################################
     # initialize tree
     n_tree_node = 2*just_bigger_power_2(MAX_N)
     tree = generate_tree(n_tree_node)
-
     # set points [(1,1), (2,3), (3,5)]
     x2y = defaultdict(list)
     x2y[1] = [1]
     x2y[2] = [3]
     x2y[3] = [5]
-
     # update tree with node (l,r,value)
     root = [1]
     for i in range(1,MAX_N+1):
@@ -58,9 +70,41 @@ if __name__=="__main__":
         for y in x2y[i]:
             tree[new_root][2] += 1 # increment value
             update(tree, new_root, 0, MAX_N-1, 1, y) # add log(len(tree)) nodes at best
-
-    # answer query (# poits inside [1,2]x[1,3])
+    # answer query (# points inside [1,2]x[1,3])
     ans = 0
     l, r, b, t = 1,2,1,3 
     ans += (query(tree, root[r], 0, MAX_N-1, b, t) - query(tree, root[l-1], 0, MAX_N-1, b, t))
     assert ans == 2
+
+    ##########################
+    # get kth element in [l,r]
+    ##########################
+    # shrink coordinate
+    arr = [9, 3, 1, 2]
+    sorted_arr = sorted(list(set(arr)))
+    mapping = {v: i for i, v in enumerate(sorted_arr)}
+    inverse_mapping = {i: v for i, v in enumerate(sorted_arr)}
+    shrinked_arr = [mapping[el] for el in arr]
+    
+    L = len(arr)
+    treesize = 2*just_bigger_power_2(L)
+    tree = generate_tree(treesize)
+
+    # update tree with node (l,r,value)
+    root = [1]
+    for i in range(L):
+        prev_root = root[-1]
+        new_root = len(tree)
+        root.append(new_root)
+        tree.append([tree[prev_root][0], tree[prev_root][1], tree[prev_root][2] + 1])
+        update(tree, new_root, 0, L-1, 1, shrinked_arr[i])
+
+    # 2nd smallest element in [1,3] == 3
+    l, r, k = 1, 3, 2
+    index = get_kth(tree, root[r], root[l-1], 0, L-1, k)
+    assert inverse_mapping[index] == 3
+
+    # 1st smallest element in [3,4] == 1
+    l, r, k = 3, 4, 1
+    index = get_kth(tree, root[r], root[l-1], 0, L-1, k)
+    assert inverse_mapping[index] == 1
