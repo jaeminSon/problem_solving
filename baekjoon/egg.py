@@ -10,7 +10,7 @@ def just_bigger_power_2(val):
     return 2**i
 
 def generate_tree(tree_size):
-    return [[0,0,0]]+ [[i<<1, i<<1|1, 0] for i in range(tree_size // 2)] # dummy first element
+    return [[0,0,0]]+ [[i<<1, i<<1|1, 0] for i in range(1, tree_size // 2)] + [[0,0,0] for i in range(tree_size // 2)] # dummy first element
 
 def update(tree, node, s, e, increment, index):
     if s != e: 
@@ -56,7 +56,7 @@ for _ in range(T):
         root.append(new_root)
         tree.append([tree[prev_root][0], tree[prev_root][1], tree[prev_root][2]]) # initialize with prev root
         for y in x2y[i]:
-            tree[root[i]][2] += 1 # increment value
+            tree[new_root][2] += 1 # increment value
             update(tree, new_root, 1, MAX_N, 1, y)
 
     # answer queries

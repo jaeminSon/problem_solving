@@ -9,13 +9,13 @@ def just_bigger_power_2(val):
     return 2**i
 
 def generate_tree(tree_size):
-    return [[0,0,0]]+ [[i<<1, i<<1|1, 0] for i in range(tree_size // 2)] # dummy first element
+    # node: [l, r, value]
+    return [[0,0,0]]+ [[i<<1, i<<1|1, 0] for i in range(1, tree_size // 2)] + [[0,0,0] for _ in range(tree_size // 2)]  # dummy first element
 
 def update(tree, node, s, e, increment, index):
     if s != e: 
         mid = (s + e) // 2
-        left_ch = tree[node][0]
-        right_ch = tree[node][1]
+        left_ch, right_ch, val = tree[node]
         if index <= mid: # update left child
             tree[node][0] = len(tree)
             tree.append([tree[left_ch][0], tree[left_ch][1], tree[left_ch][2] + increment])
@@ -26,14 +26,14 @@ def update(tree, node, s, e, increment, index):
             update(tree, tree[node][1], mid + 1, e, increment, index)
 
 def query(tree, node, s, e, l, r):
+    # [l, r]
     if r < s or l > e:
         return 0
     elif l <= s and e <= r:
         return tree[node][2] # return value
     else:
         mid = (s + e) // 2
-        left_ch = tree[node][0]
-        right_ch = tree[node][1]
+        left_ch, right_ch, val = tree[node]
         return query(tree, left_ch, s, mid, l, r) + query(tree, right_ch, mid + 1, e, l, r)
 
 if __name__=="__main__":
@@ -56,11 +56,11 @@ if __name__=="__main__":
         root.append(new_root)
         tree.append([tree[prev_root][0], tree[prev_root][1], tree[prev_root][2]]) # initialize with prev root
         for y in x2y[i]:
-            tree[root[i]][2] += 1 # increment value
-            update(tree, new_root, 1, MAX_N, 1, y) # add log(len(tree)) nodes at best
+            tree[new_root][2] += 1 # increment value
+            update(tree, new_root, 0, MAX_N-1, 1, y) # add log(len(tree)) nodes at best
 
     # answer query (# poits inside [1,2]x[1,3])
     ans = 0
     l, r, b, t = 1,2,1,3 
-    ans += (query(tree, root[r], 1, MAX_N, b, t) - query(tree, root[l-1], 1, MAX_N, b, t))
+    ans += (query(tree, root[r], 0, MAX_N-1, b, t) - query(tree, root[l-1], 0, MAX_N-1, b, t))
     assert ans == 2
