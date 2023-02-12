@@ -9,7 +9,14 @@ for _ in range(N-1):
     s,e = [int(d)-1 for d in sys.stdin.readline().rstrip().split()]
     adj[s].append(e)
 
-# no weight (uniform weight)
+# no weight
+adj = defaultdict(list)
+for _ in range(N-1):
+    s,e  = [int(d) for d in sys.stdin.readline().rstrip().split()]
+    adj[s].append(e)
+    adj[e].append(s)
+
+# uniform weight
 adj = defaultdict(dict)
 for _ in range(N-1):
     s,e  = [int(d) for d in sys.stdin.readline().rstrip().split()]
