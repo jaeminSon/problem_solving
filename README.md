@@ -7,9 +7,11 @@
 - self_generated_problems: (just for fun)
 - templates: algorithm templates for problem solving
 
-## Materials
+## Automation
+- [template for LLM](https://docs.google.com/document/d/1ptYhcIEQ-IV_EY9pPXPA_TLYSQB43MvYd7Ut8l1KhWA/edit?usp=sharing)
 - [cheatsheet](https://docs.google.com/spreadsheets/d/1VoVr5ObzuaRgxEY-To-LREIzAPUTIYpfI7fH4rUAu5w/edit?usp=sharing)
-- [tactics](https://docs.google.com/presentation/d/1zFf-20tJ5mzxY1VBw0TIDiSCtyfYGEPWtMPQTwWCwjk/edit?usp=sharing)
+
+## Materials
 - competitive programming by steven halim (book)
 - [competitive programming](https://cp-algorithms.com/)
 - [leet code hard](https://leetcode.com/problemset/all/?difficulty=HARD&page=1)
