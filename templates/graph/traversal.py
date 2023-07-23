@@ -34,7 +34,7 @@ def dfs_postorder(adjacency_list, root, neighbor_func):
                 
     return postorder
 
-def retrieve_connected_trees(adjacency_list, root, neighbor_func):
+def retrieve_connected_trees(adjacency_list, neighbor_func):
     list_trees = []
     not_marked = set(range(len(adjacency_list)))
     while len(not_marked) > 0:
