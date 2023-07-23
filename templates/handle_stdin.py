@@ -1,39 +1,37 @@
-import sys
-
 # single line integer
-N = int(sys.stdin.readline().rstrip())
+N = int(input())
 
 # multi-line problems
-problems = [sys.stdin.readline().rstrip() for _ in range(N)]
+problems = [input().rstrip() for _ in range(N)]
 
 ###################
 ##### integer #####
 ###################
 
 # multiple integers in one line
-l = [int(d) for d in sys.stdin.readline().rstrip().split()]
+l = map(int, input().split())
 
 # two integers in one line
-m,n  = [int(d) for d in sys.stdin.readline().rstrip().split()]
+m,n  = map(int, input().split())
 
 # three integers in one line
-m,n,k  = [int(d) for d in sys.stdin.readline().rstrip().split()]
+m,n,k  = map(int, input().split())
 
 # four integers in one line
-m,n,p,q  = [int(d) for d in sys.stdin.readline().rstrip().split()]
+m,n,p,q  = map(int, input().split())
     
 #################
 ##### chars #####
 #################
 # multiple chars in one line
-l = [d for d in sys.stdin.readline().rstrip().split()]
+l = input().split()
 
 # two chars in one line
-m,n  = [d for d in sys.stdin.readline().rstrip().split()]
+m,n  = input().split()
 
 # three chars in one line
-m,n,k  = [d for d in sys.stdin.readline().rstrip().split()]
+m,n,k  = input().split()
 
 # four chars in one line
-m,n,p,q  = [d for d in sys.stdin.readline().rstrip().split()]
+m,n,p,q  = input().split()
     
