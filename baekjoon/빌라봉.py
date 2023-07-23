@@ -1,37 +1,6 @@
 from collections import defaultdict
 
 
-def diameter(graph, root):
-    """
-    graph: defaultdict(dict) (graph[u][v] == graph[v][u] == weight)
-    """
-    def dfs(graph, root, track_nodes=False):
-        stack = [(root, 0)]
-        marked = set([root])
-        max_dist = 0
-        max_dist_node = root
-        nodes = []
-        while stack:
-            node, dist = stack.pop()
-            if track_nodes:
-                nodes.append(node)
-
-            if dist > max_dist:
-                max_dist_node = node
-                max_dist = dist
-
-            for ne, w in graph[node].items():
-                if ne not in marked:
-                    stack.append((ne, dist+w))
-                    marked.add(ne)
-
-        return max_dist, max_dist_node, nodes
-
-    _, max_dist_node, _ = dfs(graph, root)
-    max_dist, _, nodes = dfs(graph, max_dist_node, track_nodes=True)
-    return max_dist, nodes
-
-
 def radius(graph, root):
     """
     graph: defaultdict(dict) (graph[u][v] == graph[v][u] == weight)
@@ -63,6 +32,7 @@ def radius(graph, root):
         stack = [(root, 0)]
         marked = set([root])
         max_dist = defaultdict(dict)
+        diameter = 0
         while stack:
             node, dist = stack.pop()
             if node == root:
@@ -74,17 +44,22 @@ def radius(graph, root):
                 for ch in [ne for ne in graph[node] if ne != p]:
                     max_dist[node][ch] = graph[node][ch] + dist_child[ch]
 
+            for u in graph[node]:
+                for v in graph[node]:
+                    if u != v:
+                        diameter = max(diameter, max_dist[node][v] + max_dist[node][u])
+
             for ne, w in graph[node].items():
                 if ne not in marked:
                     stack.append((ne, dist+w))
                     marked.add(ne)
 
-        return {node: max(max_dist[node].values(), default=0) for node in max_dist}
+        return {node: max(max_dist[node].values(), default=0) for node in max_dist}, diameter, marked
 
     dist_child, parent = dfs_postorder(graph, root)
-    max_dist = dfs_preorder(graph, root, dist_child, parent)
+    max_dist, diameter, visited = dfs_preorder(graph, root, dist_child, parent)
 
-    return min(max_dist.values(), default=0)
+    return min(max_dist.values(), default=0), diameter, visited
 
 
 graph = defaultdict(dict)
@@ -96,24 +71,22 @@ for _ in range(M):
     graph[a][b] = graph[b][a] = t
 
 
-list_roots = []
+list_radius = []
 max_diameter = 0
 not_marked = set(range(N))
 while len(not_marked) > 0:
     root = not_marked.pop()
-    max_dist, nodes = diameter(graph, root)
-    if len(nodes) > 0:
-        max_diameter = max(max_diameter, max_dist)
-    list_roots.append(nodes[0])  # root node
-    not_marked -= set(nodes)
+    r, diameter, marked = radius(graph, root)
+    list_radius.append(r)
+    if len(marked) > 0:
+        max_diameter = max(max_diameter, diameter)
+    not_marked -= marked
 
-list_radius = [radius(graph, tree) for tree in list_roots]
-
-if len(list_roots) == 0:
+if len(list_radius) == 0:
     print(L)
-elif len(list_roots) == 1:
+elif len(list_radius) == 1:
     print(max_diameter)
-elif len(list_roots) == 2:
+elif len(list_radius) == 2:
     print(max(max_diameter, sum(list_radius) + L))
 else:
     ans1, ans2, ans3 = 0, 0, 0
