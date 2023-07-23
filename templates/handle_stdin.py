@@ -9,7 +9,7 @@ problems = [input().rstrip() for _ in range(N)]
 ###################
 
 # multiple integers in one line
-l = map(int, input().split())
+l = list(map(int, input().split()))
 
 # two integers in one line
 m,n  = map(int, input().split())
