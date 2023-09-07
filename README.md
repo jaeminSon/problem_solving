@@ -9,6 +9,7 @@
 
 ## Automation
 - [template for LLM](https://docs.google.com/document/d/1ptYhcIEQ-IV_EY9pPXPA_TLYSQB43MvYd7Ut8l1KhWA/edit?usp=sharing)
+- [text environment for LLM](https://docs.google.com/document/d/1Hwdv30tx8lZah9Mvlyl-WiM5h42lve0ezzwHT51b7D0/edit?usp=sharing)
 - [cheatsheet](https://docs.google.com/spreadsheets/d/1VoVr5ObzuaRgxEY-To-LREIzAPUTIYpfI7fH4rUAu5w/edit?usp=sharing)
 
 ## Materials
