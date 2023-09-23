@@ -103,14 +103,15 @@ class LCA_LOGARITHM:
                 self.dp_parent[i][j] = self.dp_parent[i-1][self.dp_parent[i-1][j]]
 
     def go_up(self, node, dist):
-        for i in range(self.log_max_height, -1, -1):
-            if dist & (1 << i):
+        for i in range(self.log_max_height):
+            if (dist >> i) & 1:
                 node = self.dp_parent[i][node]
         return node
 
     def lca_query(self, node1, node2):
-        node1 = self.go_up(node1, max(0, self.depth[node1]-self.depth[node2]))
-        node2 = self.go_up(node2, max(0, self.depth[node2]-self.depth[node1]))
+        if self.depth[node1] > self.depth[node2]:
+            node1, node2 = node2, node1
+        node2 = self.go_up(node2, self.depth[node2]-self.depth[node1])
         if node1 == node2:
             return node1
         else:
