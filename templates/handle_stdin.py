@@ -1,3 +1,6 @@
+from sys import stdin
+input = stdin.readline
+
 # single line integer
 N = int(input())
 
