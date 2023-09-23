@@ -1,5 +1,6 @@
 from collections import deque, defaultdict
 
+
 def dfs_preorder(adjacency_list, root, neighbor_func):
     # returns valid preorder sequence
     stack = [root]
@@ -14,6 +15,7 @@ def dfs_preorder(adjacency_list, root, neighbor_func):
                 marked.add(ne)
     return preorder
 
+
 def dfs_postorder(adjacency_list, root, neighbor_func):
     # returns valid postorder sequence
     stack = [root]
@@ -22,17 +24,18 @@ def dfs_postorder(adjacency_list, root, neighbor_func):
     while stack:
         node = stack.pop()
         list_neighbors = [ne for ne in neighbor_func(adjacency_list, node) if ne not in marked]
-        if len(list_neighbors)==0: # add leaf node or intermediate node
+        if len(list_neighbors) == 0:  # add leaf node or intermediate node
             postorder.append(node)
         else:
-            stack.append(node) # push node at first visit of the intermediate node
+            stack.append(node)  # push node at first visit of the intermediate node
             # push neighbors
             for ne in list_neighbors:
                 if ne not in marked:
                     stack.append(ne)
                     marked.add(ne)
-                
+
     return postorder
+
 
 def retrieve_connected_trees(adjacency_list, neighbor_func):
     list_trees = []
@@ -44,13 +47,14 @@ def retrieve_connected_trees(adjacency_list, neighbor_func):
         not_marked -= set(nodes)
     return list_trees
 
+
 def bfs(adjacency_list, root, neighbor_func):
     # returns valid bfs sequence
     q = deque([root])
     marked = set([root])
     order = []
     while q:
-        node = q.popleft() # visit node 
+        node = q.popleft()  # visit node
         order.append(node)
         for ne in neighbor_func(adjacency_list, node):
             if ne not in marked:
@@ -59,6 +63,8 @@ def bfs(adjacency_list, root, neighbor_func):
     return order
 
 # binary tree (one-liner)
+
+
 class Node:
     def __init__(self, val, parent=None):
         self.left = None
@@ -70,14 +76,18 @@ class Node:
             elif parent.right is None:
                 parent.right = self
 
+
 def preorder(root):
-  return [root.val] + preorder(root.left) + preorder(root.right) if root else []
+    return [root.val] + preorder(root.left) + preorder(root.right) if root else []
+
 
 def inorder(root):
-  return  inorder(root.left) + [root.val] + inorder(root.right) if root else []
+    return inorder(root.left) + [root.val] + inorder(root.right) if root else []
+
 
 def postorder(root):
-  return  postorder(root.left) + postorder(root.right) + [root.val] if root else []
+    return postorder(root.left) + postorder(root.right) + [root.val] if root else []
+
 
 def mark_depth(adjacency_list, root):
     depth = defaultdict(int)
@@ -92,16 +102,38 @@ def mark_depth(adjacency_list, root):
                 marked.add(ne)
     return depth
 
-if __name__=="__main__":
+
+def node_status(adjacency_list, root):
+
+    def dfs(idx, par, dep):
+        size[idx] = 1
+        parent[idx] = par
+        depth[idx] = dep
+        for ch in adjacency_list[idx]:
+            if size[ch] == 0:
+                size[idx] += dfs(ch, idx, dep+1)
+        return size[idx]
+
+    n_nodes = len(adjacency_list)
+    size = [0] * n_nodes
+    depth = [0] * n_nodes
+    parent = [-1] * n_nodes
+
+    dfs(root, -1, 0)
+
+    return size, depth, parent
+
+
+if __name__ == "__main__":
 
     ###################
     # graph structure #
     ######   0   ######
     ####  1     2 #####
-    ###  3 4 - 5 6 #### (node 4-5 are connected)
+    # 3 4 - 5 6 #### (node 4-5 are connected)
     ###################
     adjacency_list = [[1, 2], [0, 3, 4], [0, 5, 6], [1], [1, 5], [2, 4], [2]]
-    neighbor_func = lambda x,y:x[y]
+    def neighbor_func(x, y): return x[y]
     assert dfs_preorder(adjacency_list, 0, neighbor_func) == [0, 2, 6, 5, 4, 1, 3]
     assert dfs_postorder(adjacency_list, 0, neighbor_func) == [6, 4, 5, 2, 3, 1, 0]
     assert bfs(adjacency_list, 0, neighbor_func) == [0, 1, 2, 3, 4, 5, 6]
@@ -110,10 +142,10 @@ if __name__=="__main__":
     # graph structure #
     ######   0   ######
     ####  1     2 #####
-    ###  3 4 - 5 6 #### (node 4-5 and 3-6 are connected)
+    # 3 4 - 5 6 #### (node 4-5 and 3-6 are connected)
     ##   |_______|   ##
     ###################
-    assert dfs_postorder([[1, 2], [0, 3, 4], [0, 5, 6], [1,6], [1, 5], [2, 4], [2, 3]], 0, neighbor_func) == [3, 6, 4, 5, 2, 1, 0]
+    assert dfs_postorder([[1, 2], [0, 3, 4], [0, 5, 6], [1, 6], [1, 5], [2, 4], [2, 3]], 0, neighbor_func) == [3, 6, 4, 5, 2, 1, 0]
 
     ##################
     # tree structure #
@@ -131,5 +163,7 @@ if __name__=="__main__":
     assert preorder(node0) == [0, 1, 3, 4, 2, 5, 6]
     assert inorder(node0) == [3, 1, 4, 0, 5, 2, 6]
     assert postorder(node0) == [3, 4, 1, 5, 6, 2, 0]
-    
+
     assert mark_depth([[1, 2], [0, 3, 4], [0, 5, 6], [1], [1], [2], [2]], 0) == {0: 0, 2: 1, 6: 2, 5: 2, 1: 1, 4: 2, 3: 2}
+
+    assert node_status([[], [5, 2], [1], [4, 5], [3], [1, 3]], 1) == ([0, 5, 1, 2, 1, 3], [0, 0, 1, 2, 3, 1], [-1, -1, 1, 5, 3, 1])
