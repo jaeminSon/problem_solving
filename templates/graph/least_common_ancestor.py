@@ -81,7 +81,7 @@ class LCA_LOGARITHM:
         self.n_nodes = n_nodes
         self.log_max_height = log_max_height
 
-        self.dp_parent = [[0]*n_nodes for _ in range(log_max_height)]
+        self.dp_parent = [[-1]*n_nodes for _ in range(log_max_height)]
         self.depth = [0]*n_nodes
         self.visit = [False]*n_nodes
 
