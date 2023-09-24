@@ -1,7 +1,12 @@
-def KMP(pattern, txt):
- 
+import sys
+sys.path.append("..")
+from custom_type import STRING, LIST1D
+
+
+def KMP(pattern: STRING, txt: STRING):
+
     table = generate_partial_match_table(pattern)
- 
+
     i = 0
     j = 0
     while i < len(txt):
@@ -13,11 +18,12 @@ def KMP(pattern, txt):
             if i >= len(txt):
                 return None
         else:
-            if j != 0: # check if previous match could be used
+            if j != 0:  # check if previous match could be used
                 j = table[j-1]
             else:
                 i += 1
- 
+
+
 def generate_partial_match_table(pattern):
     # +---+----------+-------+------------------------+
     # | i |  s[0:i]  | p[i]  | Matching Prefix/Suffix |
@@ -31,22 +37,22 @@ def generate_partial_match_table(pattern):
     # | 6 | ababaca  |     1 | a                      |
     # +---+----------+-------+------------------------+
     table = [0] * len(pattern)
- 
+
     i = 1
     j = 0
     while i < len(pattern):
-        if pattern[i]== pattern[j]:
+        if pattern[i] == pattern[j]:
             table[i] = j + 1
             i += 1
             j += 1
         else:
-            if j != 0: # check if previous match could be used
+            if j != 0:  # check if previous match could be used
                 j = table[j-1]
             else:
                 i += 1
     return table
 
+
 if __name__ == "__main__":
-    print(KMP("ABABCABAB", "ABABDABACDABABCABAB"))
-    print(KMP("K", "ABABDABACDABABCABAB"))
- 
+    assert KMP("ABABCABAB", "ABABDABACDABABCABAB") == 10
+    assert KMP("K", "ABABDABACDABABCABAB") == None
