@@ -1,5 +1,12 @@
-def longest_common_subsequence(X, Y):
+import sys
+sys.path.append("..")
+from custom_type import LIST1D, LIST2D, REAL, NAT
 
+
+def longest_common_subsequence(X: LIST1D, Y: LIST1D) -> int:
+    """
+    Returns the length of the longest common subsequence.
+    """
     # initialize dp table
     dp = [[0]*(len(X)+1) for _ in range(len(Y)+1)]
 
@@ -17,7 +24,7 @@ def longest_common_subsequence(X, Y):
     return ans
 
 
-def traveling_salesman(distance_matrix):
+def traveling_salesman(distance_matrix: LIST2D) -> REAL:
 
     # initialize table
     n = len(distance_matrix)
@@ -35,7 +42,7 @@ def traveling_salesman(distance_matrix):
     return _recursive_call(0, 0)
 
 
-def bitonic_traveling_salesman(distance_matrix):
+def bitonic_traveling_salesman(distance_matrix: LIST2D) -> REAL:
 
     def _recursive_call(start_LR, end_RL):
         if dp[start_LR][end_RL] is None:
@@ -55,7 +62,7 @@ def bitonic_traveling_salesman(distance_matrix):
     return dp[0][0]
 
 
-def convex_hull_trick(A, B, C, D):
+def convex_hull_trick(A: LIST1D, B: LIST1D, C: LIST1D, D: LIST1D) -> REAL:
     # dp[i] = min(0 ≤ j < i){A[i]B[j] + dp[j]+ C[j]} + D[i]
     # constraint: B should be monotonically decreasing => O(nlogn)
     #             (additionally) if A is monotonically increasing => O(n)
@@ -111,7 +118,7 @@ def convex_hull_trick(A, B, C, D):
     return dp[n-1]
 
 
-def divide_and_conquer(M, cost):
+def divide_and_conquer(M: NAT, cost: LIST2D) -> REAL:
     # dp[i][j] = min (k < j){dp[i-1][k] + cost[k][j]}
     # constraint: argmin[i][j] <= argmin[i][j+1] or cost(a, c) + cost(b, d) <= cost(a, d) + cost(b, c) for all a <= b <= c <= d
     # suppose cost is augmented (i.e. cost[0][l]=0, cost[0][t]=0)
@@ -144,7 +151,7 @@ def divide_and_conquer(M, cost):
     return dp[M][N-1]
 
 
-def knuth_speedup(cost):
+def knuth_speedup(cost: LIST2D) -> REAL:
     """
     Knuth-Yao dynamic programming speedup,
     also known as the Knuth-Yao optimization, is a technique that accelerates

@@ -1,4 +1,9 @@
-def iterative_deepening_a_star(adjacency_matrix, heuristic_matrix, start, goal):
+import sys
+sys.path.append("..")
+from custom_type import LIST2D, NODE, NAT
+
+
+def iterative_deepening_a_star(adjacency_matrix: LIST2D, heuristic_matrix: LIST2D, start: NODE, goal: NODE) -> NAT:
 
     def _recursive_call(s, goal, distance):
         if s == goal:
@@ -8,7 +13,7 @@ def iterative_deepening_a_star(adjacency_matrix, heuristic_matrix, start, goal):
         else:
             min_estimate = float("inf")
             for i, w in enumerate(adjacency_matrix[s]):
-                if w!=0:
+                if w != 0:
                     path_found, res = _recursive_call(i, goal, distance + adjacency_matrix[s][i])
                     if path_found:
                         return True, res
@@ -27,8 +32,10 @@ def iterative_deepening_a_star(adjacency_matrix, heuristic_matrix, start, goal):
         else:
             threshold = [res]
 
+
 if __name__ == "__main__":
-    root2 = 1.41
-    adjacency_matrix = [[0,3,3,0,0,0,0],[0,0,0,3,3,0,0],[0,0,0,0,0,3,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,3],[0,0,0,0,0,0,0]]
-    heuristic_matrix = [[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0],[0,0,0,0,0,0,0]]
+    adjacency_matrix = [[0, 3, 3, 0, 0, 0, 0], [0, 0, 0, 3, 3, 0, 0], [0, 0, 0, 0, 0, 3, 0], [
+        0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 3], [0, 0, 0, 0, 0, 0, 0]]
+    heuristic_matrix = [[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [
+        0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]]
     print(iterative_deepening_a_star(adjacency_matrix, heuristic_matrix, 0, 6))
