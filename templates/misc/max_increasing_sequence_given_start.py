@@ -1,6 +1,11 @@
+import sys
+sys.path.append("..")
+from custom_type import LIST1D, NAT
+
 import bisect
 
-def max_increasing_sequence(seq):
+
+def max_increasing_sequence(seq: LIST1D) -> NAT:
     stack = []
     res = 0
     for val in seq:
