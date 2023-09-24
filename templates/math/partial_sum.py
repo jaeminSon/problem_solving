@@ -1,4 +1,9 @@
-def cumulative_sum(l):
+import sys
+sys.path.append("..")
+from custom_type import LIST1D, LIST2D
+
+
+def cumulative_sum(l: LIST1D) -> LIST1D:
     # s[i] = sum(l[:i])
     s = [0]
     for i in range(len(l)):
@@ -6,7 +11,7 @@ def cumulative_sum(l):
     return s
 
 
-def partial_sum(l):
+def partial_sum(l: LIST1D) -> LIST2D:
     # ps[i][j] = sum([i:j])
     s = cumulative_sum(l)
     n = len(l)+1
@@ -16,6 +21,7 @@ def partial_sum(l):
             ps[i][j] = s[j] - s[i]
     return ps
 
+
 if __name__ == "__main__":
-    assert cumulative_sum([1,2,3])==[0,1,3,6]
-    assert partial_sum([1,2,3])==[[0,1,3,6],[0,0,2,5], [0,0,0,3],[0,0,0,0]]
+    assert cumulative_sum([1, 2, 3]) == [0, 1, 3, 6]
+    assert partial_sum([1, 2, 3]) == [[0, 1, 3, 6], [0, 0, 2, 5], [0, 0, 0, 3], [0, 0, 0, 0]]

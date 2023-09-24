@@ -1,8 +1,13 @@
+import sys
+sys.path.append("..")
+from custom_type import NAT
+
+
 a_list_2to32 = [2, 7, 61]
 a_list_2to64 = [2, 325, 9375, 28178, 450775, 9780504, 1795265022]
 
 
-def miller_rabin(n:int, a:int):
+def miller_rabin(n, a):
     d = n - 1
     while d % 2 == 0:
         if pow(a, d, n) == n-1:
@@ -12,7 +17,7 @@ def miller_rabin(n:int, a:int):
     return last == n-1 or last == 1
 
 
-def is_prime(n:int):
+def is_prime(n: NAT) -> bool:
     if n <= 1:
         return False
     elif n < 2**16:
@@ -29,7 +34,7 @@ def is_prime(n:int):
             a_list = a_list_2to64
         else:
             raise ValueError("n too big to handle.")
-    
+
         for a in a_list:
             if not miller_rabin(n, a):
                 return False

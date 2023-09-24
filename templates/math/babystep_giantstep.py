@@ -1,11 +1,15 @@
+import sys
+sys.path.append("..")
+from custom_type import NAT
+
 from math import ceil, sqrt
 
 
-def babystep_giantstep(a, b, p):
+def babystep_giantstep(a: NAT, b: NAT, p: NAT) -> NAT:
     '''
     Solve x for a^x mod p == b
     '''
-    
+
     n = ceil(sqrt(p))
 
     # baby step - a^{1...n} mod p
@@ -20,5 +24,5 @@ def babystep_giantstep(a, b, p):
 
 
 if __name__ == "__main__":
-    print(babystep_giantstep(5, 4, 7))
-    print(babystep_giantstep(2, 3, 7))
+    assert babystep_giantstep(5, 4, 7) == 2
+    assert babystep_giantstep(2, 3, 7) == None

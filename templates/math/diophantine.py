@@ -1,5 +1,9 @@
+import sys
+sys.path.append("..")
+from custom_type import NAT
 
-def diophantine_all_soln(a: int, b: int, c: int, n: int = 2):
+
+def diophantine_all_soln(a: NAT, b: NAT, c: NAT, n: NAT = 2):
     (x0, y0) = diophantine(a, b, c)
     d = gdc(a, b)
     p = a // d
@@ -10,7 +14,8 @@ def diophantine_all_soln(a: int, b: int, c: int, n: int = 2):
         y = y0 - i * p
         print(x, y)
 
-def diophantine(a: int, b: int, c: int):
+
+def diophantine(a: NAT, b: NAT, c: NAT):
     """
     Given a*x + b*y = c, find x and y
     """
@@ -20,7 +25,7 @@ def diophantine(a: int, b: int, c: int):
     return (r * x, r * y)
 
 
-def gdc(a: int, b: int):
+def gdc(a: NAT, b: NAT) -> NAT:
     if a < b:
         a, b = b, a
 
@@ -30,7 +35,7 @@ def gdc(a: int, b: int):
     return b
 
 
-def extended_gcd(a: int, b: int):
+def extended_gcd(a: NAT, b: NAT):
     """
     d = a*x + b*y = gcd(a,b)
     """
@@ -50,4 +55,4 @@ def extended_gcd(a: int, b: int):
 
 
 if __name__ == "__main__":
-    print(diophantine(5,6,1))
+    assert diophantine(5, 6, 1) == (-1, 1)

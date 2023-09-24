@@ -1,4 +1,9 @@
-def sieve_eratosthenes(n:int) -> list:
+import sys
+sys.path.append("..")
+from custom_type import NAT
+
+
+def sieve_eratosthenes(n: NAT):
     # sieve starts with 0
     is_prime = [False, False, True] + [True, False] * ((n - 2) // 2)
     if n % 2 == 1:
@@ -13,8 +18,8 @@ def sieve_eratosthenes(n:int) -> list:
 
     return primes, is_prime
 
+
 if __name__ == "__main__":
     list_primes, sieve = sieve_eratosthenes(10)
     assert len(list_primes) == 4
-    assert sieve==[False, False, True, True, False, True, False, True, False, False, False]
-
+    assert sieve == [False, False, True, True, False, True, False, True, False, False, False]
