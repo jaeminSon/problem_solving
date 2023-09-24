@@ -1,4 +1,4 @@
-from typing import TypeVar
+from typing import TypeVar, List
 
 ###############
 # ALL NAMES ARE UPPERCASE.
@@ -22,4 +22,10 @@ TREE_HLD = TypeVar("TREE_HLD")
 BIPARTITE = TypeVar("BIPARTITE")
 GRAPH = TypeVar("GRAPH")
 GRAPH_NONNEGEDGE = TypeVar("GRAPH_NONNEGEDGE")
+
+POINT2D = TypeVar("POINT2D")
+POLYGON2D = List[POINT2D]
+SEGMENTS2D = List[POLYGON2D]
+HALFPLANE = TypeVar("HALFPLANE")
+HALFPLANES = List[HALFPLANE]
 

@@ -1,10 +1,15 @@
-def shrink_coord_1d(l, s=0):
+import sys
+sys.path.append("..")
+from custom_type import LIST1D, LIST2D
+
+
+def shrink_coord_1d(l: LIST1D, s=0):
     l_unique_sorted = sorted(list(set(l)))
     mapping = {v: i+s for i, v in enumerate(l_unique_sorted)}
     return [mapping[el] for el in l]
 
 
-def shrink_coord_2d(l, s=(0, 0)):
+def shrink_coord_2d(l: LIST2D, s=(0, 0)):
     mapping = [[] for _ in range(2)]
     for dim in range(2):
         unique_sorted = sorted(list(set([el[dim] for el in l])))

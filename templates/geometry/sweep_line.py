@@ -1,6 +1,11 @@
-from sortedcontainers import SortedDict, SortedList
+import sys
+sys.path.append("..")
+from custom_type import SEGMENTS2D
+
 import gmpy2
+from sortedcontainers import SortedDict, SortedList
 from typing import List, Optional
+
 
 
 NT = gmpy2.mpq
@@ -317,13 +322,14 @@ class SweepLine(object):
         return isects
 
 
-def isect_segments(segs: List, include_endpoints: bool = False) -> List:
+def isect_segments(segs: SEGMENTS2D, include_endpoints: bool = False) -> List:
     seg_objs = [Segment(Point(*seg[0]), Point(*seg[1])) for seg in segs]
     sl = SweepLine(include_endpoints=include_endpoints)
     results = sl(seg_objs)
     return [(float(res.x), float(res.y)) for res in results]
 
+
 if __name__ == "__main__":
-    segments = [((0, 0), (10, 10)), ((5, -5), (5, 5)), ((3,-3), (3,3))]
+    segments = [((0, 0), (10, 10)), ((5, -5), (5, 5)), ((3, -3), (3, 3))]
     ret = isect_segments(segments)
     print(ret)
