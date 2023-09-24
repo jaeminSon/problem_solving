@@ -1,4 +1,9 @@
-def kruskal_mst(adjacency_list):
+import sys
+sys.path.append("..")
+from custom_type import TREE, LIST1D
+
+
+def kruskal_mst(adjacency_list: TREE) -> LIST1D:
 
     def find(parent:list, i:int):
         if parent[i] != i:
@@ -37,7 +42,7 @@ def kruskal_mst(adjacency_list):
     return mst
  
 import heapq
-def prim_mst(adjacency_list):
+def prim_mst(adjacency_list: TREE) -> LIST1D:
     
     start_node = min([(s,t,w) for s, e in enumerate(adjacency_list) for t, w in e], key=lambda x:x[2])[0]
     visited = set([start_node])

@@ -1,6 +1,9 @@
+import sys
+sys.path.append("..")
+from custom_type import TREE, NODE
 from collections import defaultdict
 
-def get_centroid_recursive(adjacency_list:list):
+def get_centroid_recursive(adjacency_list:TREE) -> NODE:
 
     def get_size(node, parent):
         list_size[node] = 1
@@ -21,7 +24,7 @@ def get_centroid_recursive(adjacency_list:list):
     return _recursive(0,-1)
 
 
-def get_centroid_loop(adjacency_list:list):
+def get_centroid_loop(adjacency_list:TREE) -> NODE:
 
     def get_size(root):
         stack = [root]
@@ -60,7 +63,8 @@ def get_centroid_loop(adjacency_list:list):
     get_size(0)
     return find_centroid(0)
 
-def centroid_decomposition(adjacency_list:dict):
+def centroid_decomposition(adjacency_list:TREE) -> NODE:
+    # this implementation assumes adjacency_list is dictionary
     
     list_size = [0]*(max(adjacency_list.keys())+1)
     

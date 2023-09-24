@@ -1,10 +1,15 @@
+import sys
+sys.path.append("..")
+from custom_type import TREE, TREE_HLD, LIST1D
+
 import math
+from typing import Tuple
 
 N = 100
 L = pow(2, math.ceil(math.log2(N)))
 segtree = [0] * (2*L)
 
-def heavy_light_decomposition(adjacency_list):
+def heavy_light_decomposition_for_segtree(adjacency_list: TREE) -> Tuple[TREE_HLD, LIST1D]:
         
     def dfs_recursive(curr, parent):
         tree["parent"][curr] = parent
@@ -135,7 +140,7 @@ if __name__=="__main__":
     edge = [(0, 1, 1), (1, 2, 2)]
     adjacency_list = [[1], [0, 2], [1]]
 
-    tree, pos_seg = heavy_light_decomposition(adjacency_list)
+    tree, pos_seg = heavy_light_decomposition_for_segtree(adjacency_list)
     initialize_segtree()
     
     assert range_query_between_nodes(1,0)==1 # max weight between node 1 and 0

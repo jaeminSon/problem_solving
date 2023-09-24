@@ -1,7 +1,12 @@
+import sys
+sys.path.append("..")
+from custom_type import GRAPH, NODE, LIST1D
+
+from typing import List, Dict
 from collections import deque, defaultdict
 
 
-def dfs_preorder(adjacency_list, root, neighbor_func):
+def dfs_preorder(adjacency_list: GRAPH, root: NODE, neighbor_func) -> LIST1D:
     # returns valid preorder sequence
     stack = [root]
     marked = set([root])
@@ -16,7 +21,7 @@ def dfs_preorder(adjacency_list, root, neighbor_func):
     return preorder
 
 
-def dfs_postorder(adjacency_list, root, neighbor_func):
+def dfs_postorder(adjacency_list: GRAPH, root: NODE, neighbor_func) -> LIST1D:
     # returns valid postorder sequence
     stack = [root]
     marked = set([root])
@@ -37,7 +42,7 @@ def dfs_postorder(adjacency_list, root, neighbor_func):
     return postorder
 
 
-def retrieve_connected_trees(adjacency_list, neighbor_func):
+def retrieve_connected_trees(adjacency_list: GRAPH, neighbor_func) -> List[LIST1D]:
     list_trees = []
     not_marked = set(range(len(adjacency_list)))
     while len(not_marked) > 0:
@@ -48,7 +53,7 @@ def retrieve_connected_trees(adjacency_list, neighbor_func):
     return list_trees
 
 
-def bfs(adjacency_list, root, neighbor_func):
+def bfs(adjacency_list: GRAPH, root, neighbor_func) -> LIST1D:
     # returns valid bfs sequence
     q = deque([root])
     marked = set([root])
@@ -77,19 +82,19 @@ class Node:
                 parent.right = self
 
 
-def preorder(root):
+def preorder(root: NODE):
     return [root.val] + preorder(root.left) + preorder(root.right) if root else []
 
 
-def inorder(root):
+def inorder(root: NODE):
     return inorder(root.left) + [root.val] + inorder(root.right) if root else []
 
 
-def postorder(root):
+def postorder(root: NODE):
     return postorder(root.left) + postorder(root.right) + [root.val] if root else []
 
 
-def mark_depth(adjacency_list, root):
+def mark_depth(adjacency_list: GRAPH, root: NODE) -> Dict[NODE, int]:
     depth = defaultdict(int)
     stack = [(root, 0)]
     marked = set([root])
@@ -103,7 +108,7 @@ def mark_depth(adjacency_list, root):
     return depth
 
 
-def node_status(adjacency_list, root):
+def node_status(adjacency_list: GRAPH, root: NODE):
 
     def dfs(idx, par, dep):
         size[idx] = 1

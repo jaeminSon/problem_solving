@@ -1,4 +1,7 @@
+import sys
+sys.path.append("..")
 from collections import defaultdict
+from custom_type import GRAPH, LIST1D
 
 
 class EulerianPath:
@@ -40,8 +43,15 @@ class EulerianPath:
                 self.dfs(ne)
         self.path.append(v)
         
-def get_Eulerian_path(g:defaultdict):
-    """get eulerian path with loop (without recursion)
+def get_Eulerian_path(g:GRAPH) -> LIST1D:
+    """
+    get eulerian path with loop (without recursion)
+    
+    Args:
+        g: graph in a type of defaultdict
+    
+    Returns:
+        a list of nodes
     """
     N = len(g.keys())
     

@@ -1,8 +1,11 @@
+import sys
+sys.path.append("..")
 import math
+from custom_type import TREE
 
 
 class LCA_SPRASE_TABLE:
-    def __init__(self, adjacency_list):
+    def __init__(self, adjacency_list: TREE):
         self.adjacency_list = adjacency_list
         self.n_nodes = len(adjacency_list)
 
@@ -73,7 +76,7 @@ class LCA_SPRASE_TABLE:
 
 
 class LCA_LOGARITHM:
-    def __init__(self, adjacency_list):
+    def __init__(self, adjacency_list: TREE):
         self.adjacency_list = adjacency_list
         self.n_nodes = len(adjacency_list)
 

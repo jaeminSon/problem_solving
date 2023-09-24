@@ -1,7 +1,12 @@
+import sys
+sys.path.append("..")
+
 from collections import defaultdict
 
+from custom_type import GRAPH, NODE
 
-def diameter(graph, root=0):
+
+def diameter(graph: GRAPH, root: NODE = 0) -> int:
     """
     graph: defaultdict(dict) (graph[u][v] == graph[v][u] == weight)
     """
@@ -29,7 +34,7 @@ def diameter(graph, root=0):
     return max_dist
 
 
-def radius(graph, root=0):
+def radius(graph: GRAPH, root: NODE = 0) -> int:
     """
     graph: defaultdict(dict) (graph[u][v] == graph[v][u] == weight)
     """
