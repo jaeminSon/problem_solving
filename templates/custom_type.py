@@ -17,6 +17,7 @@ STRING = TypeVar("STRING")
 
 NODE = TypeVar("NODE")
 EDGE = TypeVar("EDGE")
+EDGES = List[EDGE]
 TREE = TypeVar("TREE")
 TREE_HLD = TypeVar("TREE_HLD")
 BIPARTITE = TypeVar("BIPARTITE")
