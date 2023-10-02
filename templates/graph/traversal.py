@@ -1,9 +1,9 @@
+from collections import deque, defaultdict
+from typing import List, Dict
+
 import sys
 sys.path.append("..")
-from custom_type import GRAPH, NODE, LIST1D
-
-from typing import List, Dict
-from collections import deque, defaultdict
+from custom_type import GRAPH, TREE, NODE, LIST1D
 
 
 def dfs_preorder(adjacency_list: GRAPH, root: NODE, neighbor_func) -> LIST1D:
@@ -108,16 +108,18 @@ def mark_depth(adjacency_list: GRAPH, root: NODE) -> Dict[NODE, int]:
     return depth
 
 
-def node_status(adjacency_list: GRAPH, root: NODE):
-
-    def dfs(idx, par, dep):
-        size[idx] = 1
-        parent[idx] = par
-        depth[idx] = dep
-        for ch in adjacency_list[idx]:
-            if size[ch] == 0:
-                size[idx] += dfs(ch, idx, dep+1)
-        return size[idx]
+def node_status(adjacency_list: TREE, root: NODE):
+    """
+    Assume connected tree
+    """
+    def dfs(curr, par, dep):
+        size[curr] = 1
+        parent[curr] = par
+        depth[curr] = dep
+        for ch in adjacency_list[curr]:
+            if ch != par:
+                size[curr] += dfs(ch, curr, dep+1)
+        return size[curr]
 
     n_nodes = len(adjacency_list)
     size = [0] * n_nodes
@@ -127,6 +129,27 @@ def node_status(adjacency_list: GRAPH, root: NODE):
     dfs(root, -1, 0)
 
     return size, depth, parent
+
+
+def dfs_recursive(adjacency_list: TREE, curr, n_nodes: int):
+    def dfs(node):
+        visited[curr] = True
+        for ch in adjacency_list[curr]:
+            if not visited[ch]:
+                pass
+                # <returned_value_from_child> = dfs(ch)
+                # <do some operations>
+    
+    # to avoid visiting multiple nodes when dealing with a multiple trees
+    # reference visited when checking 'visited'
+    # ========================
+    # visited = [False]*(N+1)
+    # for i in range(N+1):
+    #     if not visited[i]:
+    #         dfs(i)
+    # ========================
+    visited = [False] * n_nodes
+    return None  # <something>
 
 
 if __name__ == "__main__":
