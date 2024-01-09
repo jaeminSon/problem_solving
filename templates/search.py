@@ -2,6 +2,7 @@ import os
 import glob
 import ast
 from collections import defaultdict
+from typing import List, Dict, Tuple
 
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
@@ -10,11 +11,26 @@ from langchain.prompts import PromptTemplate
 from langchain_community.llms import LlamaCpp
 
 
-def find_python_files(directory):
+def find_python_files(directory: str) -> List[str]:
     return glob.glob(os.path.join(directory, '**/*.py'), recursive=True)
 
 
-def extract_functions(file_path, input_type, function_name):
+def get_relevant_function_from_ast_node(node, input_type: str, function_name: str) -> Tuple[str, Dict]:
+    arg_types = {}
+    for arg in node.args.args:
+        if hasattr(arg.annotation, "id"):
+            arg_name = arg.arg
+            arg_types[arg_name] = arg.annotation.id.lower()
+
+    function_name_node = node.name.lower()
+
+    if (any(input_type in arg_type for arg_type in arg_types.values())) and (function_name in function_name_node):
+        return (function_name_node, arg_types)
+    else:
+        return None
+
+
+def search_functions(file_path: str, input_type: str, function_name: str) -> List[str]:
 
     with open(file_path, 'r') as file:
         tree = ast.parse(file.read())
@@ -23,27 +39,34 @@ def extract_functions(file_path, input_type, function_name):
     for node in ast.walk(tree):
         if isinstance(node, ast.FunctionDef):
 
-            arg_types = {}
-            for arg in node.args.args:
-                if hasattr(arg.annotation, "id"):
-                    arg_name = arg.arg
-                    arg_types[arg_name] = arg.annotation.id.lower()
+            function_found = get_relevant_function_from_ast_node(
+                node, input_type, function_name)
+            if function_found is not None:
+                functions.append(function_found)
 
-            function_name_node = node.name
+        elif isinstance(node, ast.ClassDef):
+            if function_name in node.name.lower():
+                functions.append((node.name, {}))
 
-            if (not input_type or (input_type and any(input_type in arg_type for arg_type in arg_types.values()))) and (not function_name or (function_name and function_name in function_name_node)):
-                functions.append((function_name_node, arg_types))
+            for node_func in node.body:
+                if isinstance(node_func, ast.FunctionDef):
+                    function_found = get_relevant_function_from_ast_node(
+                        node_func, input_type, function_name)
+                    if function_found is not None:
+                        functions.append(
+                            (f"{node.name}-{function_found[0]}", function_found[1]))
 
     return functions
 
 
-def crawl_and_filter_functions(python_files, input_type, function_name):
+def get_relevant_functions(python_files: List[str], input_type: str, function_name: str) -> Dict[str, list]:
     matching_functions = defaultdict(list)
 
     for file_path in python_files:
-        functions = extract_functions(file_path, input_type, function_name)
+        functions_found = search_functions(
+            file_path, input_type, function_name)
         matching_functions[os.path.basename(file_path).replace('.py', '')].extend(
-            [(function_name, args) for function_name, args in functions])
+            [(function_name, args) for function_name, args in functions_found])
 
     return matching_functions
 
@@ -54,9 +77,9 @@ def parse_input(string):
     for word in words:
         k, v = word.split(":")
         if "input" in k:
-            d["input_type"] = v.replace(" ", "")
+            d["input_type"] = v.replace(" ", "").lower()
         elif "func" in k:
-            d["function_name"] = v.replace(" ", "")
+            d["function_name"] = v.replace(" ", "").lower()
     return d["input_type"], d["function_name"]
 
 
@@ -84,35 +107,30 @@ if __name__ == "__main__":
 
     while True:
         print("="*20)
-        print(f"Describe a problem or strategy to solve the problem.")
+        print("Search input or function. (e.g. input: tree, func: dikstra)")
         print("="*20)
 
         input_str = input()
 
         try:
-            prompt = f"You're given a description of a programming problem. Your job is to find the input type for any program that can lead to solving the problem.\
-                  Choose an input type among the following options: [INT, REAL, LIST1D, LIST2D, STRING, TREE, BIPARTITE, GRAPH, POINT2D, SEGMENT1D, POLYGON2D, HALFPLANE].\
-                  Note that you have to output in a format 'input_type': your choice in verbatim. Do not include any additional characters. Do not explain reasons.\
-                  description: {input_str}"
-            chain = llm_chain.invoke({"prompt": prompt})
-            input_type = chain["text"].split("\n")[0].split(
-                ":")[1].replace(" ", "").replace("'", "")
-            function_name = ""
+            input_type, function_name = parse_input(input_str)
 
-            print(f"Input type: {input_type}")
-            print("="*20)
-
-            matching_functions = crawl_and_filter_functions(
+            relevant_functions = get_relevant_functions(
                 python_files, input_type, function_name)
 
-            print("")
-            for fname in matching_functions:
-                if len(matching_functions[fname]) > 0:
+            for fname in relevant_functions:
+                if len(relevant_functions[fname]) > 0:
                     print(f"{fname}")
-                    for function_name, args in matching_functions[fname]:
+                    for function_name, args in relevant_functions[fname]:
                         print(f" - {function_name} ({args})")
 
             print("="*20)
+
         except:
-            print("Failed to parse the input.")
-            pass
+
+            prompt = f"You're given a description of a programming problem. Your job is to find the input type for any program that can lead to solving the problem.\
+                    Choose an input type among the following options: [INT, REAL, LIST1D, LIST2D, STRING, TREE, BIPARTITE, GRAPH, POINT2D, SEGMENT1D, POLYGON2D, HALFPLANE].\
+                    Note that you have to output in a format 'input_type': your choice in verbatim. Do not include any additional characters. Do not explain reasons.\
+                    description: {input_str}"
+            chain = llm_chain.invoke({"prompt": prompt})
+            print(chain["text"])
