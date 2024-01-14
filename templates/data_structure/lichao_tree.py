@@ -15,7 +15,7 @@ class Node(object):
         self.L = L
         self.R = R
         
-class Li_Chao(object):
+class LiChaoTree(object):
 
     def __init__(self, s, e):
         self.tree = [Node(Line(0, -float("inf")), s, e, None, None)]
@@ -63,7 +63,7 @@ class Li_Chao(object):
 
 if __name__=="__main__":
 
-    lichao = Li_Chao(0, 1e20)
+    lichao = LiChaoTree(0, 1e20)
 
     lichao.insert(Line(2,1))
     lichao.insert(Line(3,0))
