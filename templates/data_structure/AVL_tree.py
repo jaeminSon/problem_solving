@@ -5,7 +5,7 @@ class Node(object):
         self.right = None
         self.height = 1
  
-class AVL(object):
+class AVLTree(object):
  
     def _balance(self, root):
         balance = self.get_balance(root) # left-right
@@ -121,7 +121,7 @@ class AVL(object):
  
  
 if __name__ == "__main__":
-    avl = AVL()
+    avl = AVLTree()
     root = None
     
     # import time
