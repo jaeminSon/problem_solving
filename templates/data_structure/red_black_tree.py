@@ -8,7 +8,7 @@ class Node():
         self.right = None
         self.color = "RED"
 
-class RedBlack(object):
+class RedBlackTree(object):
 
     def __init__(self):
         self.NULLNODE = Node(float("inf"))
@@ -299,7 +299,7 @@ class RedBlack(object):
 
 
 if __name__ == "__main__":
-    bst = RedBlack()
+    bst = RedBlackTree()
 
     bst.insert(55)
     bst.insert(40)
