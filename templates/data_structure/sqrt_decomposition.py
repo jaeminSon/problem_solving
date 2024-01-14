@@ -1,6 +1,11 @@
+import sys
+sys.path.append("..")
+from custom_type import LIST1D
+
+
 class SqrtDecomposition:
     
-    def __init__(self, arr) -> None:
+    def __init__(self, arr: LIST1D) -> None:
         self.n = len(arr)
         self.arr = arr
         self.block_size = int(self.n**(1./2))
@@ -39,7 +44,7 @@ class SqrtDecomposition:
 
 class SqrtDecompositionSearchNonZero:
     
-    def __init__(self, arr) -> None:
+    def __init__(self, arr: LIST1D) -> None:
         self.n = len(arr)
         self.arr = arr # distribution
         self.block_size = int(self.n**(1./2))

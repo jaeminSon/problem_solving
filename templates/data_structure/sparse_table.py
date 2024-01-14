@@ -1,6 +1,11 @@
 import math
- 
-def build_sparse_table(arr):
+
+import sys
+sys.path.append("..")
+from custom_type import LIST1D, LIST2D
+
+
+def build_sparse_table(arr: LIST1D) -> LIST2D:
     n = len(arr)
     sparse_table = [[0]*int(math.log2(n)+1) for _ in range(n)]
     for i in range(n):
@@ -17,7 +22,7 @@ def build_sparse_table(arr):
     
     return sparse_table
 
-def query(sparse_table, L, R):
+def query(sparse_table: LIST2D, L:int, R:int):
     # min range in [L, R] (both sides inclusive)
     j = int(math.log2(R - L + 1))
     return min(sparse_table[L][j], sparse_table[R - (1 << j) + 1][j])

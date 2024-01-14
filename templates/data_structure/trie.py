@@ -1,5 +1,10 @@
+import sys
+sys.path.append("..")
+from custom_type import STRING
+
+
 class TrieNode:
-    def __init__(self, char):
+    def __init__(self, char: STRING):
         self.char = char
         self.end = False
         self.children = {}
@@ -9,7 +14,7 @@ class Trie(object):
     def __init__(self):
         self.root = TrieNode("")
     
-    def insert(self, word):
+    def insert(self, word: STRING):
         node = self.root
         for char in word:
             if char in node.children:
@@ -20,14 +25,14 @@ class Trie(object):
                 node = new_node
         node.end = True
         
-    def dfs(self, node, prefix):
+    def dfs(self, node: TrieNode, prefix: STRING):
         if node.end:
             self.output.append(prefix + node.char)
         
         for child in node.children.values():
             self.dfs(child, prefix + node.char)
         
-    def query(self, x):
+    def query(self, x: STRING) -> STRING:
         self.output = []
         node = self.root
         
