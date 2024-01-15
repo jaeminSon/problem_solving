@@ -10,6 +10,11 @@ def ccw(p1: POINT2D, p2: POINT2D, p3: POINT2D) -> bool:
     return x1*y2+x2*y3+x3*y1-y1*x2-y2*x3-y3*x1 < 0
 
 
+def interserct(p1: POINT2D, p2: POINT2D, p3: POINT2D, p4: POINT2D):
+    # check if line segment p1-p2 and p3-p4 intersects
+    return ccw(p1, p3, p4) != ccw(p2, p3, p4) and ccw(p1, p2, p3) != ccw(p1, p2, p4)
+
+
 def is_convex(list_points: POLYGON2D) -> bool:
     # list_points in ccw
     for i in range(len(list_points)):
@@ -40,3 +45,5 @@ if __name__ == "__main__":
     assert is_convex([(0, 0), (3, 0), (3, 3), (0, 3)])
     assert not is_convex([(0, 0), (2, 2), (0, 4), (1, 2)])
     assert is_inside((1.5, 2), [(0, 0), (2, 2), (0, 4), (1, 2)])
+    assert interserct((0, 0), (1, 1), (0, 1), (1, 0))
+    assert not interserct((0, 0), (1, 1), (3, 3), (4, 4))
