@@ -73,15 +73,24 @@ def two_SAT(adjacency_list:GRAPH) -> LIST1D:
     return ans
 
 
+def cnf2graph(formula):
+    
+    variables = set([abs(el) for el in sum([list(el) for el in formula], [])])
+    assert max(variables) == len(variables)
+
+    adjacency_list = [[] for _ in range(2 * len(variables) + 1)]
+    for i, j in formula:
+        # xi v xj == (-i -> j) /\ (-j -> i)
+        adjacency_list[-i].append(j) # -i -> j
+        adjacency_list[-j].append(i) # -j -> i
+
+    return adjacency_list
+
 if __name__ == "__main__":
 
     # (-x1 v x2) /\ (-x2 v x3) /\ (x1 v x3) /\ (x3 v x2)
-    n_variable_types = 3
-    pairs_var = [(-1, 2), (-2, 3), (1, 3), (3, 2)]
-    adjacency_list = [[] for _ in range(2 * n_variable_types + 1)]
-    for i, j in pairs_var:
-        adjacency_list[-i].append(j)
-        adjacency_list[-j].append(i)
+    formula = [(-1, 2), (-2, 3), (1, 3), (3, 2)]
+    adjacency_list = cnf2graph(formula)
 
     assert two_SAT(adjacency_list) in [[True, True, True], 
                                        [False, False, True], 
