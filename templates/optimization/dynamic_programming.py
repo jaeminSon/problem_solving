@@ -64,11 +64,10 @@ def bitonic_traveling_salesman(distance_matrix: LIST2D) -> REAL:
 
 def convex_hull_trick(A: LIST1D, B: LIST1D, C: LIST1D, D: LIST1D) -> REAL:
     # dp[i] = min(0 ≤ j < i){A[i]B[j] + dp[j]+ C[j]} + D[i]
+    # assert dp[0] == 0 (null state)
     # constraint: B should be monotonically decreasing => O(nlogn)
-    #             (additionally) if A is monotonically increasing => O(n)
+    #             (additionally) if A is non-decreasing => O(n)
     # line segment formula: f(x) = B[j] * x + dp[j]+ C[j] (A[i] ~ x)
-
-    from bisect import bisect
 
     assert len(A) == len(B)
     if C:
@@ -101,11 +100,11 @@ def convex_hull_trick(A: LIST1D, B: LIST1D, C: LIST1D, D: LIST1D) -> REAL:
         # lo, hi = 0, len(stack)
         # while lo < hi:
         #     mid = (lo + hi) // 2
-        #     if stack[mid][2] < A[i]:
+        #     if stack[mid][2] < A[j]:
         #         lo = mid + 1
         #     else:
         #         hi = mid
-        # dp[i] = stack[lo-1][0] * A[i] + stack[lo-1][1]
+        # dp[j] = stack[lo-1][0] * A[j] + stack[lo-1][1]
 
         # A is monotonically increasing
         while pos+1 < len(stack) and stack[pos+1][2] < A[j]:
