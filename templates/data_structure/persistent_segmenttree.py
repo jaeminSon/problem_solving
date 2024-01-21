@@ -53,6 +53,17 @@ def get_kth(tree:TREE, next_node, prev_node, s, e, k):
         else:
             return get_kth(tree, tree[next_node][1], tree[prev_node][1], mid+1, e, k-left_size)
 
+def n_elements_leq_x(tree:TREE, next_node, prev_node, s, e, x):
+    if s == e:
+        return tree[next_node][2] - tree[prev_node][2]
+    else:
+        left_size = tree[tree[next_node][0]][2] - tree[tree[prev_node][0]][2]
+        mid = (s + e) // 2
+        if x <= mid:
+            return n_elements_leq_x(tree, tree[next_node][0], tree[prev_node][0], s, mid, x)
+        else:
+            return left_size + n_elements_leq_x(tree, tree[next_node][1], tree[prev_node][1], mid+1, e, x)
+
 if __name__=="__main__":
 
     ##################################
@@ -104,12 +115,40 @@ if __name__=="__main__":
         tree.append([tree[prev_root][0], tree[prev_root][1], tree[prev_root][2]])
         update(tree, new_root, 0, L-1, 1, shrinked_arr[i])
 
-    # 2nd smallest element in [1,3] == 3
+    # 2nd smallest element in [9,3,1] == 3
     l, r, k = 1, 3, 2
     index = get_kth(tree, root[r], root[l-1], 0, L-1, k)
     assert inverse_mapping[index] == 3
 
-    # 1st smallest element in [3,4] == 1
+    # 1st smallest element in [1,2] == 1
     l, r, k = 3, 4, 1
     index = get_kth(tree, root[r], root[l-1], 0, L-1, k)
     assert inverse_mapping[index] == 1
+
+    #######################################################
+    # sum in [l,r] (tree is defined on coordinate and elements are updated)
+    #######################################################
+    arr = [1, 7, 8, 3, 2] # value in [0, inf]
+    
+    L = max(arr) + 2
+    treesize = 2*just_bigger_power_2(L)
+    tree = generate_tree(treesize)
+
+    # update tree with node (l,r,value)
+    root = [1]
+    for val in arr:
+        prev_root = root[-1]
+        new_root = len(tree)
+        root.append(new_root)
+        tree.append([tree[prev_root][0], tree[prev_root][1], tree[prev_root][2]])
+        update(tree, new_root, 0, L-1, 1, val)
+
+    # [1, 7, 8] -> [1, 7]
+    l, r, x = 1, 3, 7
+    ans = n_elements_leq_x(tree, root[r], root[l-1], 0, L-1, x)
+    assert ans == 2
+    
+    # [1, 7, 8, 3, 2] -> [1, 7, 3, 2]
+    l, r, x = 1, 5, 7
+    ans = n_elements_leq_x(tree, root[r], root[l-1], 0, L-1, x)
+    assert ans == 4
