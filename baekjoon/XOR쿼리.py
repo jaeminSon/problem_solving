@@ -78,7 +78,7 @@ L = 500_002
 n_tree_node = 2*just_bigger_power_2(L)
 tree = generate_tree(n_tree_node)
 root = [1] * L
-curr_n_root = 1
+curr_n_root = 0
 
 M = int(input())
 
@@ -89,13 +89,12 @@ for _ in range(M):
 for l in questions:
     
     if l[0] == "1":
-        prev_root = root[curr_n_root-1]
-        new_root = len(tree)
-        root[curr_n_root] = new_root
         curr_n_root += 1
+        root[curr_n_root] = len(tree)
+        prev_root = root[curr_n_root-1]
         tree.append([tree[prev_root][0], tree[prev_root]
                     [1], tree[prev_root][2]])
-        update(tree, new_root, 0, L-1, 1, int(l[1]))
+        update(tree, root[curr_n_root], 0, L-1, 1, int(l[1]))
     elif l[0] == "2":
         ans = xor(tree, root[int(l[2])],
                   root[int(l[1])-1], 0, L-1, int(l[3]), 18)
