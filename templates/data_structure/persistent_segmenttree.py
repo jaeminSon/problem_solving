@@ -5,8 +5,6 @@ sys.path.append("..")
 from custom_type import TREE
 
 
-MAX_N = 100_001
-
 def just_bigger_power_2(val):
     i=0
     while 2**i < val:
@@ -70,7 +68,9 @@ if __name__=="__main__":
     # count #points inside [1,2]x[1,3]
     ##################################
     # initialize tree
-    n_tree_node = 2*just_bigger_power_2(MAX_N)
+    MAX_N = 100_001
+    L = just_bigger_power_2(MAX_N) # L should be power of 2
+    n_tree_node = 2 * L
     tree = generate_tree(n_tree_node)
     # set points [(1,1), (2,3), (3,5)]
     x2y = defaultdict(list)
@@ -79,17 +79,17 @@ if __name__=="__main__":
     x2y[3] = [5]
     # update tree with node (l,r,value)
     root = [1]
-    for i in range(1,MAX_N+1):
+    for i in range(1, MAX_N+1):
         prev_root = root[-1]
         new_root = len(tree)
         root.append(new_root)
         tree.append([tree[prev_root][0], tree[prev_root][1], tree[prev_root][2]]) # initialize with prev root
         for y in x2y[i]:
-            update(tree, new_root, 0, MAX_N-1, 1, y) # add log(len(tree)) nodes at best
+            update(tree, new_root, 0, L-1, 1, y) # add log(len(tree)) nodes at best
     # answer query (# points inside [1,2]x[1,3])
     ans = 0
     l, r, b, t = 1,2,1,3 
-    ans += (query(tree, root[r], 0, MAX_N-1, b, t) - query(tree, root[l-1], 0, MAX_N-1, b, t))
+    ans += (query(tree, root[r], 0, L-1, b, t) - query(tree, root[l-1], 0, L-1, b, t))
     assert ans == 2
 
     ##########################
@@ -102,13 +102,13 @@ if __name__=="__main__":
     inverse_mapping = {i: v for i, v in enumerate(sorted_arr)}
     shrinked_arr = [mapping[el] for el in arr]
     
-    L = len(arr)
-    treesize = 2*just_bigger_power_2(L)
+    L = just_bigger_power_2(L)  # L should be power of 2
+    treesize = 2 * L
     tree = generate_tree(treesize)
 
     # update tree with node (l,r,value)
     root = [1]
-    for i in range(L):
+    for i in range(len(arr)):
         prev_root = root[-1]
         new_root = len(tree)
         root.append(new_root)
@@ -130,8 +130,8 @@ if __name__=="__main__":
     #######################################################
     arr = [1, 7, 8, 3, 2] # value in [0, inf]
     
-    L = max(arr) + 2
-    treesize = 2*just_bigger_power_2(L)
+    L = just_bigger_power_2(L)  # L should be power of 2
+    treesize = 2 * L
     tree = generate_tree(treesize)
 
     # update tree with node (l,r,value)
