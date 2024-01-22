@@ -74,8 +74,8 @@ def xor(tree, next_node, prev_node, s, e, x, shift):
                 return xor(tree, tree[next_node][0], tree[prev_node][0], s, mid, x, shift-1)
 
 
-L = 500_002
-n_tree_node = 2*just_bigger_power_2(L)
+n_tree_node = 2**20
+L = 2**19
 tree = generate_tree(n_tree_node)
 root = [1] * L
 curr_n_root = 0
