@@ -45,7 +45,7 @@ def search_functions(file_path: str, input_type: str, function_name: str) -> Lis
                 functions.append(function_found)
 
         elif isinstance(node, ast.ClassDef):
-            if function_name in node.name.lower():
+            if len(function_name) > 0 and function_name in node.name.lower():
                 functions.append((node.name, {}))
 
             for node_func in node.body:
@@ -65,7 +65,7 @@ def get_relevant_functions(python_files: List[str], input_type: str, function_na
     for file_path in python_files:
         functions_found = search_functions(
             file_path, input_type, function_name)
-        matching_functions[os.path.basename(file_path).replace('.py', '')].extend(
+        matching_functions[file_path].extend(
             [(function_name, args) for function_name, args in functions_found])
 
     return matching_functions
@@ -111,6 +111,7 @@ if __name__ == "__main__":
         print("="*20)
 
         input_str = input()
+        print("="*20)
 
         try:
             input_type, function_name = parse_input(input_str)
