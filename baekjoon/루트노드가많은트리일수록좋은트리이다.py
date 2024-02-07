@@ -27,9 +27,9 @@ class SegmentTreeLazyPropagation:
         right_deg, right_count = right
 
         if left_deg < right_deg:
-            return left
+            return [left_deg, left_count]
         elif left_deg > right_deg:
-            return right
+            return [right_deg, right_count]
         else:
             return [left_deg, left_count + right_count]
 
@@ -49,6 +49,7 @@ class SegmentTreeLazyPropagation:
     def propagate(self, node_index, node_s, node_e):
         if self.lazy[node_index] != 0:  # reflect lazy updates
             self.tree[node_index][0] += self.lazy[node_index]
+            assert 0 <= self.tree[node_index][0] < N
             if node_s != node_e:  # intermediate node
                 self.lazy[node_index * 2 + 1] += self.lazy[node_index]
                 self.lazy[node_index * 2 + 2] += self.lazy[node_index]
