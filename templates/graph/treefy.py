@@ -1,12 +1,15 @@
 import sys
 sys.path.append("..")
-from custom_type import EDGES, TREE
+from custom_type import GRAPH, TREE
 
 from collections import defaultdict
 
 
 
-def graph2tree(edges: EDGES, n_nodes: int) -> TREE:
+def treefy(edges: GRAPH) -> TREE:
+    """
+    Split a node if there is a cycle to make a given graph into a tree.
+    """
 
     def find(k):
         if parent[k] != k:
@@ -27,16 +30,17 @@ def graph2tree(edges: EDGES, n_nodes: int) -> TREE:
 
     max_n_nodes = 2*len(edges)
     parent = [i for i in range(max_n_nodes)]
-    original = [i for i in range(max_n_nodes)]
+    treenode2graphnode = [i for i in range(max_n_nodes)]
     rank = [0] * max_n_nodes
 
+    n_nodes = len(set([i for e in edges for i in e]))
     tree = defaultdict(dict)
     for u, v in edges:
         root_u = find(u)
         root_v = find(v)
         if root_u == root_v:
             n_nodes += 1
-            original[n_nodes] = v
+            treenode2graphnode[n_nodes] = v
             v = n_nodes
         else:
             union(u, v)
@@ -44,8 +48,8 @@ def graph2tree(edges: EDGES, n_nodes: int) -> TREE:
         tree[u].update({v: 1})
         tree[v].update({u: 1})
 
-    return tree, original
+    return tree, treenode2graphnode
 
 
 if __name__ == "__main__":
-    print(graph2tree([(1, 2), (1, 4), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5)], 5))
+    print(treefy([(1, 2), (1, 4), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5)]))
