@@ -6,6 +6,9 @@ import bisect
 
 
 def max_increasing_sequence(seq: LIST1D) -> NAT:
+    """
+    Returns length of the longest monotonically increasing sequence.
+    """
     stack = []
     res = 0
     for val in seq:

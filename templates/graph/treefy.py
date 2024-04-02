@@ -8,7 +8,17 @@ from collections import defaultdict
 
 def treefy(edges: GRAPH) -> TREE:
     """
-    Split a node if there is a cycle to make a given graph into a tree.
+    Split individual node into multiple nodes to make a given graph into a tree.
+    >>> treefy([(1, 2), (1, 4), (2, 3), (2, 4), (2, 5), (3, 4), (3, 5)])
+    ({1: {2: 1, 4: 1}, 
+      2: {1: 1, 3: 1, 6: 1, 5: 1}, 
+      4: {1: 1}, 
+      3: {2: 1, 7: 1, 8: 1}, 
+      6: {2: 1}, 
+      5: {2: 1}, 
+      7: {3: 1}, 
+      8: {3: 1}}, 
+      [0, 1, 2, 3, 4, 5, 4, 4, 5, 9, 10, 11, 12, 13])
     """
 
     def find(k):

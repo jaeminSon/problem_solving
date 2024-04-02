@@ -1,10 +1,13 @@
 import sys
 sys.path.append("..")
-from custom_type import NAT, LIST1D
+from custom_type import NAT, LIST1D, SEGMENTS1D
 
 
-def mo(data: LIST1D, queries: LIST1D) -> LIST1D:
-    # (N+Q)sqrt(N) by sorting queries efficiently
+def mo(data: LIST1D, queries: SEGMENTS1D) -> LIST1D:
+    """
+    Sort range queries efficiently to achieve (N+Q)sqrt(N) where N==|data| and Q==|queries|.
+    Return a list of answers to all queries.
+    """
     Q = len(queries)
 
     sqrtN = int(len(data)**(1./2))
