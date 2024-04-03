@@ -21,6 +21,9 @@ class LiChaoTree(object):
         self.tree = [Node(Line(0, -float("inf")), s, e, None, None)]
 
     def insert(self, new_line:Line, index_node=0):
+        """
+        Insert a new_line given by (s, e) meaning y=s*x+e
+        """
         
         s = self.tree[index_node].s
         e = self.tree[index_node].e
@@ -49,7 +52,10 @@ class LiChaoTree(object):
                     self.tree.append(Node(Line(0, -float("inf")), s, m, None, None))
                 self.insert(high, self.tree[index_node].L)
 
-    def query(self, x, index_node=0):
+    def query(self, x:float, index_node=0) -> float:
+        """
+        Return maximum y-value at x among lines.
+        """
         if index_node is None:
             return -float("inf")
         else:
