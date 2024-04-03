@@ -2,7 +2,7 @@ from collections import defaultdict
 
 import sys
 sys.path.append("..")
-from custom_type import TREE, NAT
+from custom_type import NAT
 
 
 def just_bigger_power_2(val):
@@ -11,13 +11,13 @@ def just_bigger_power_2(val):
         i+=1
     return 2**i
 
-def generate_tree(tree_size:NAT) -> TREE:
+def generate_tree(tree_size:NAT):
     """
     Generate an empty tree with a node of [index_to_left_child, index_to_right_child, value]
     """
     return [[0,0,0]]+ [[i<<1, i<<1|1, 0] for i in range(1, tree_size // 2)] + [[0,0,0] for _ in range(tree_size // 2)]  # dummy first element
 
-def update(tree:TREE, node, s, e, increment, index):
+def update(tree, node, s, e, increment, index):
     """
     Increment a value at <index> while recursively updating a node value and a child node.
     [<s>,<e>] represents the range of <node> and <tree> is a list.
@@ -39,7 +39,7 @@ def update(tree:TREE, node, s, e, increment, index):
             tree.append([tree[right_ch][0], tree[right_ch][1], tree[right_ch][2]])
             update(tree, tree[node][1], mid + 1, e, increment, index)
 
-def query(tree:TREE, node, s, e, l, r):
+def query(tree, node, s, e, l, r) -> REAL:
     """
     Query a value for range [l,r] (inclusive)
     """
@@ -52,11 +52,11 @@ def query(tree:TREE, node, s, e, l, r):
         left_ch, right_ch, val = tree[node]
         return query(tree, left_ch, s, mid, l, r) + query(tree, right_ch, mid + 1, e, l, r)
 
-def get_kth(tree:TREE, next_node, prev_node, s, e, k):
+def get_kth(tree, next_node, prev_node, s, e, k) -> NAT:
     """
     Return index of <k>th value added between <prev_node> and <next_node>.
     [<s>,<e>] always includes index of <k>th value and the range is recursively narrowed down.
-    Each node in tree is [index_to_left_child, index_to_right_child, total counts in [s,e] (inclusive)]
+    Each node's value represents total counts in [s,e] (inclusive).
     """
     if s == e:
         return s
@@ -68,11 +68,11 @@ def get_kth(tree:TREE, next_node, prev_node, s, e, k):
         else:
             return get_kth(tree, tree[next_node][1], tree[prev_node][1], mid+1, e, k-left_size)
 
-def n_elements_leq_x(tree:TREE, next_node, prev_node, s, e, x):
+def n_elements_leq_x(tree, next_node, prev_node, s, e, x) -> NAT:
     """
     Return the number of integers less than or equal to <x> among values added between <prev_node> and <next_node>.
     [<s>,<e>] always includes <x> and the range is recursively narrowed down.
-    Each node in tree is [index_to_left_child, index_to_right_child, total counts in [s,e] (inclusive)]
+    Each node's value represents total counts in [s,e] (inclusive).
     """
     if s == e:
         return tree[next_node][2] - tree[prev_node][2]
