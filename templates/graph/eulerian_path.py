@@ -120,8 +120,9 @@ def get_Eulerian_path(g: GRAPH) -> LIST1D:
 
 
 def eulerian_technique(adjacency_list: TREE):
-    # assume adjacency_list starts with index 0
-
+    """
+    Return start and end of visit index for every node in an Eulerian path.
+    """
     def _dfs(node, parent):
         count[0] += 1
         start[node] = count[0]
@@ -136,7 +137,7 @@ def eulerian_technique(adjacency_list: TREE):
     start = [-1] * n
     end = [-1] * n
 
-    _dfs(0, -1)
+    _dfs(0, -1) # start with node of index==0
 
     return start, end
 

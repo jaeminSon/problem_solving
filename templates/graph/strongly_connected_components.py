@@ -4,6 +4,10 @@ from custom_type import GRAPH, LIST2D
 
 
 def tarjan_scc(adjacency_list: GRAPH) -> LIST2D:
+    """
+    Returns a list of strongly connected components.
+    Strongly connected components has a path from every vertex to every other vertex.
+    """
 
     def _dfs(node):
 
@@ -51,7 +55,11 @@ def tarjan_scc(adjacency_list: GRAPH) -> LIST2D:
 
 
 def kosaraju_scc(adjacency_list: GRAPH) -> LIST2D:
-
+    """
+    Returns a list of strongly connected components.
+    Strongly connected components has a path from every vertex to every other vertex.
+    """
+    
     def _postorder_dfs(node):
         visited[node] = True
         for next_node in adjacency_list[node]:

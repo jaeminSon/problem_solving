@@ -25,7 +25,9 @@ def longest_common_subsequence(X: LIST1D, Y: LIST1D) -> int:
 
 
 def traveling_salesman(distance_matrix: LIST2D) -> REAL:
-
+    """
+    Traveling salesman with bitmask.
+    """
     # initialize table
     n = len(distance_matrix)
     dp = [[None] * (2**n) for _ in range(n)]
@@ -43,7 +45,14 @@ def traveling_salesman(distance_matrix: LIST2D) -> REAL:
 
 
 def bitonic_traveling_salesman(distance_matrix: LIST2D) -> REAL:
-
+    """
+    Find the minimum distance of a tour that starts from the leftmost vertex, 
+    and strictly goes to the right, and then upon reaching the rightmost vertex, 
+    the tour goes strictly from right to left-back to the starting vertex. 
+    
+    dp[i][j] represents minimum cost from ith node to jth node (visiting the rightmost vertex).
+    dp[i][j] is updated using dp[i+1][j] and dp[i][j+1].
+    """
     def _recursive_call(start_LR, end_RL):
         if dp[start_LR][end_RL] is None:
             curr_node = 1 + max(start_LR, end_RL)
@@ -63,13 +72,13 @@ def bitonic_traveling_salesman(distance_matrix: LIST2D) -> REAL:
 
 
 def convex_hull_trick(A: LIST1D, B: LIST1D, C: LIST1D, D: LIST1D) -> REAL:
-    # dp[i] = min(0 ≤ j < i){A[i]B[j] + dp[j]+ C[j]} + D[i]
-    # assert dp[0] == 0 (null state)
-    # no constraint: O(nlogn) with lichao tree
-    # constraint: B should be monotonically decreasing => O(nlogn) with binary search
-    #             (additionally) if A is non-decreasing => O(n)
-    # line segment formula: f(x) = B[j] * x + dp[j]+ C[j] (A[i] ~ x)
-
+    """
+    dp[i] = min(0 ≤ j < i){A[i]B[j] + dp[j]+ C[j]} + D[i]
+    assert dp[0] == 0 (null state)
+    constraint: B is monotonically decreasing => O(nlogn) with binary search
+                B is monotonically decreasing and A is non-decreasing => O(n)
+    line segment formula: f(x) = B[j] * x + dp[j]+ C[j] (A[i] ~ x)
+    """
     assert len(A) == len(B)
     if C:
         assert len(A) == len(C)
@@ -119,7 +128,11 @@ def convex_hull_trick(A: LIST1D, B: LIST1D, C: LIST1D, D: LIST1D) -> REAL:
 
 
 def convex_hull_trick_lichao_tree(A, B, C, D):
-
+    """
+    dp[i] = min(0 ≤ j < i){A[i]B[j] + dp[j]+ C[j]} + D[i]
+    assert dp[0] == 0 (null state)
+    Time complexity of O(nlogn) with lichao tree.
+    """
     assert len(A) == len(B)
     if C:
         assert len(A) == len(C)
@@ -203,11 +216,13 @@ def convex_hull_trick_lichao_tree(A, B, C, D):
 
 
 def divide_and_conquer(M: NAT, cost: LIST2D) -> REAL:
-    # dp[i][j] = min (k < j){dp[i-1][k] + cost[k][j]}
-    # constraint: argmin[i][j] <= argmin[i][j+1] or cost(a, c) + cost(b, d) <= cost(a, d) + cost(b, c) for all a <= b <= c <= d
-    # suppose cost is augmented (i.e. cost[0][l]=0, cost[0][t]=0)
-    # 0<=i<=m, 0<=j<=n => O(mn*logn)
-
+    """
+    dp[i][j] = min (k < j){dp[i-1][k] + cost[k][j]}
+    Constraint: argmin[i][j] <= argmin[i][j+1],
+                or equivalently, cost(a, c) + cost(b, d) <= cost(a, d) + cost(b, c) for all a <= b <= c <= d
+    Suppose cost is augmented (i.e. cost[0][l]=0, cost[0][t]=0)
+    Time complexity: 0<=i<=m, 0<=j<=n => O(mn*logn)
+    """
     def _recursive(i, m, n, l, r):
         # compute dp[i][m], ...,dp[i][n] with opt_k in [l,r]
         if m > n:
@@ -244,7 +259,7 @@ def knuth_speedup(cost: LIST2D) -> REAL:
     It was introduced by Donald Knuth and Andrew Yao in their paper
     "Efficient Binary-Search Trees" in 1976.
 
-    This implementation the following recurrence relation,
+    This implements the following recurrence relation,
 
     dp[i][j] = min(i < k < j){dp[i][k] + dp[k][j] + cost[i][j]},
 

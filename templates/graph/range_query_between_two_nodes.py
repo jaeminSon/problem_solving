@@ -10,7 +10,9 @@ L = pow(2, math.ceil(math.log2(N)))
 segtree = [0] * (2*L)
 
 def heavy_light_decomposition_for_segtree(adjacency_list: TREE) -> Tuple[TREE_HLD, LIST1D]:
-        
+    """
+    Return heavy-light decomposed tree (parent, size, chain_top for each node) and indices of nodes when traversed with chain_top priority.
+    """    
     def dfs_recursive(curr, parent):
         tree["parent"][curr] = parent
         tree["size"][curr] = 1
@@ -80,6 +82,10 @@ def heavy_light_decomposition_for_segtree(adjacency_list: TREE) -> Tuple[TREE_HL
     return tree, pos_seg
 
 def initialize_segtree():
+    """
+    Following array is modeled with segmentree tree.
+    arr[assigned_position_node] == weight_with_its_parent
+    """
     for p, c, w in edge:
         if tree["parent"][p] == c:
             p,c = c,p
@@ -90,6 +96,10 @@ def initialize_segtree():
         # segtree[i] = segtree[i * 2] + segtree[i * 2 + 1]
 
 def update(i, w):
+    """
+    Update ith node in the segment tree using value w.
+    Index i is assigned by heavy-light-decomposition.
+    """
     i+=L
     segtree[i] = w
     i = i // 2
@@ -99,7 +109,9 @@ def update(i, w):
         i = i // 2
 
 def range_query(l, r):
-    # [l,r]
+    """
+    Query range [l, r] in terms of node index assigned by heavy-light-decomposition.
+    """
     l += L
     r += L
     ret = 0
@@ -117,6 +129,10 @@ def range_query(l, r):
     return ret
 
 def range_query_between_nodes(u, v):
+    """
+    Query range between node u and v where u, v are the original node indices.
+    While warping via chain_top, rely on range query using the segment tree constructed by initialize_segtree().
+    """
     ans = 0
     
     # different chains

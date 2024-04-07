@@ -6,6 +6,9 @@ from custom_type import TREE, TREE_HLD, NODE
 def heavy_light_decomposition(adjacency_list: TREE) -> TREE_HLD:
 
     def dfs(curr, parent, depth):
+        """
+        Recursively set tree which has information of parent, depth, size.
+        """
         tree["parent"][curr] = parent
         tree["depth"][curr] = depth
         tree["size"][curr] = 1
@@ -15,6 +18,9 @@ def heavy_light_decomposition(adjacency_list: TREE) -> TREE_HLD:
         return tree["size"][curr]
 
     def _assign_chain_top(curr, parent, chain_top):
+        """
+        Assign chain_top.
+        """
         tree["chain_top"][curr] = chain_top
         list_child = [v for v in adjacency_list[curr] if v != parent]
         if len(list_child) > 0:  # intermediate node

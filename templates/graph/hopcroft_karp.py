@@ -13,6 +13,11 @@ class BipartiteGraph(object):
         self.adjacency_list = left2right
 
     def hopcroft_karp(self):
+        """
+        Count the maximum cardinality matching in the bipartite graph.
+        matching_from_L2R is a matching from left side to right right
+        matching_from_R2L is a matching from right side to left right
+        """
         self.matching_from_L2R = [None] * self.n_left
         self.matching_from_R2L = [None] * self.n_right
         self.dist = [None] * self.n_left
@@ -64,3 +69,5 @@ class BipartiteGraph(object):
 if __name__ == "__main__":
     g = BipartiteGraph([[1, 2], [0], [1], [1, 3]])
     assert g.hopcroft_karp() == 4
+    assert g.matching_from_L2R == [2, 0, 1, 3]
+    assert g.matching_from_R2L == [1, 2, 0, 3]
