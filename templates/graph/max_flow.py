@@ -198,7 +198,9 @@ def min_cost_max_flow_fast(capacity_matrix: GRAPH, cost_matrix: LIST2D, source: 
     min_cost = 0
     max_flow = 0
 
-    while SPFA(capacity_matrix, dictfy(cost_matrix), source, sink, parent):
+    cost_matrix = dictfy(cost_matrix)
+
+    while SPFA(capacity_matrix, cost_matrix, source, sink, parent):
 
         path_flow = float("Inf")
         s = sink
