@@ -50,7 +50,7 @@ def parallel_binary_search(min_val: REAL, max_val: REAL, n_queries: LIST1D):
 
     while True:
         # group queries by mid point
-        mid2query = {[] for _ in range(min_val, max_val+1)}
+        mid2query = {i: [] for i in range(min_val, max_val+1)}
         finished = True
         for i in range(len(n_queries)):
             if l[i] <= r[i]:  # binary search of [l,r]
@@ -61,10 +61,9 @@ def parallel_binary_search(min_val: REAL, max_val: REAL, n_queries: LIST1D):
             break
 
         # run algorithm and handle each query
-        for i in range(None):  # TODO set for-loop
-            op_count = i + 1
+        for op_count in range(1, max_val+1):  # TODO set for-loop
             # TODO fill some operation here
-            for index_query in mid2query[i+1]:
+            for index_query in mid2query[op_count]:
                 if None:  # TODO set hit-condition
                     ans[index_query] = None  # TODO set answer
                     r[index_query] = op_count - 1  # binary search of [l,r]
