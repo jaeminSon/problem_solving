@@ -25,10 +25,20 @@ class FenwickTree:
  
 
 if __name__ == "__main__":
+    # point update & range query
     freq = [2, 1, 1, 3, 2, 3, 4, 5, 6, 7, 8, 9]
     fwtree = FenwickTree(freq)
     assert fwtree.query(5)==12
-    
     freq[3] += 6
     fwtree.update(3, 6)
-    assert fwtree.query(5)==18
+    assert fwtree.query(5) - fwtree.query(2) == 14
+
+    # range update (init array should be 0) & point query
+    freq = [0] * 10
+    fwtree = FenwickTree(freq)
+    freq[3] += 2
+    freq[4] += 2
+    freq[5] += 2
+    fwtree.update(3, 2)
+    fwtree.update(6, -2)
+    assert fwtree.query(5) == 2
