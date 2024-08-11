@@ -102,11 +102,7 @@ def set_parent(par, dist, init_element):
         par[curr] = root
 
         for next, cost in adjacency_list[curr]:
-            if (node2rank[curr] != 0 and node2rank[next] != 0) and (next != prev) and (par[next] == 0) and (dist[next] == dist[curr]+cost):
-                stack.append((next, curr, root))
-
-        for next, cost in adjacency_list[curr]:
-            if node2rank[next] == 0 and (par[next] == 0) and (next != prev) and (dist[next] == dist[curr]+cost):
+            if not (node2rank[curr] == 0 and node2rank[next] != 0) and (par[next] == 0) and (next != prev) and (dist[next] == dist[curr]+cost):
                 stack.append((next, curr, root))
 
 
