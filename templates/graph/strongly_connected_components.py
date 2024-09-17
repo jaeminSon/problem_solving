@@ -112,6 +112,29 @@ def edge2adjacencylist(list_edges):
     return result
 
 
+def edges_to_add(tree):
+    # return edges to add for the tree to be scc even though any single edge is removed
+    
+    def dfs_preorder(curr, prev=-1):
+        if len(tree[curr]) == 1:
+            leafs.append(curr)
+        for nxt in tree[curr]:
+            if nxt != prev:
+                dfs_preorder(nxt, curr)
+
+    leafs = []
+    
+    dfs_preorder(0)
+
+    edges = []
+    d = len(leafs) // 2
+    for i in range(d):
+        edges.append((leafs[i], leafs[i+d]))
+    if len(leafs) % 2 == 1:
+        edges.append((leafs[0], leafs[-1]))
+    
+    return edges
+
 if __name__ == "__main__":
     print(tarjan_scc(edge2adjacencylist([[1, 0], [0, 2], [2, 1], [0, 3], [3, 4]])))  # [[4], [3], [1, 2, 0]]
     print(tarjan_scc(edge2adjacencylist([[0, 1], [1, 2], [2, 3]])))  # [[3], [2], [1], [0]]
@@ -127,3 +150,5 @@ if __name__ == "__main__":
           [5, 6], [5, 7], [5, 8], [5, 9], [6, 4], [7, 9], [8, 9], [9, 8]])))  # [[8,9],[7],[5,4,6],[3,2,1,0]]
     print(kosaraju_scc(edge2adjacencylist([[0, 1], [1, 2], [2, 3], [2, 4], [3, 0], [4, 2]])))  # [[4,3,2,1,0]]
     print(kosaraju_scc(edge2adjacencylist([[0, 1], [1, 2], [2, 3]])))  # [[3], [2], [1], [0]]
+
+    print(edges_to_add(edge2adjacencylist([[0, 1], [1, 0], [0, 2], [2, 0], [0, 3], [3, 0]]))) # [(1, 2), (1, 3)]
