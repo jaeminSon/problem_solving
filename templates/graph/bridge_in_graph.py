@@ -40,7 +40,64 @@ def bridge_in_graph(adjacency_list: TREE) -> LIST1D:
     return bridges
 
 
-def edge2adjencylist(list_edges):
+def bridge_in_graph_loop(edges, n_nodes, root=0):
+    # edges[0] = (s, e)
+
+    adjacency_list = [[]for _ in range(n_nodes)]
+    n_edges = len(edges)
+    for i, (s, e) in enumerate(edges):
+        adjacency_list[s].append((e, i))
+        adjacency_list[e].append((s, i))
+
+    bridges = []
+    
+    curr = root
+    used_edge = [0] * n_edges
+    visit_time = [-1] * n_nodes
+    lowest_time = [-1] * n_nodes
+    parent = [-1] * n_nodes
+    index_neighbor = [0] * n_nodes
+    visit_time[0] = lowest_time[0] = 0
+    timer = 1
+    while True:
+        if len(adjacency_list[curr]) == index_neighbor[curr]:
+            # all neighbors visited, climb to parent
+
+            if curr == root:
+                # reach back to the root, thus finished
+                break
+            
+            # update parent
+            p = parent[curr]
+            lowest_time[p] = min(lowest_time[p], lowest_time[curr])
+            
+            if visit_time[curr] == lowest_time[curr]:
+                # curr node is the root of a strongly-connected-component
+                bridges.append((curr, p))
+            
+            curr = p
+        else:
+            neighbor, i = adjacency_list[curr][index_neighbor[curr]]
+            index_neighbor[curr] += 1
+            
+            if used_edge[i]:
+                continue
+            used_edge[i] = True
+            
+            if visit_time[neighbor] == -1:
+                # first time visit to neighbor
+                parent[neighbor] = curr
+                curr = neighbor
+                visit_time[curr] = lowest_time[curr] = timer
+                timer += 1
+            else:
+                # neighbor visited before
+                lowest_time[curr] = min(lowest_time[curr], lowest_time[neighbor])
+                
+    return bridges
+
+
+def edge2adjacencylist(list_edges):
     max_node_index = max([max(s, e) for s, e in list_edges])
     result = [[] for _ in range(max_node_index+1)]
     for i in range(max_node_index+1):
@@ -53,6 +110,8 @@ def edge2adjencylist(list_edges):
 
 
 if __name__ == "__main__":
-    assert bridge_in_graph(edge2adjencylist([[1, 0], [0, 2], [2, 1], [0, 3], [3, 4]])) == [(3, 4), (0, 3)]
-    assert bridge_in_graph(edge2adjencylist([[0, 1], [1, 2], [2, 3]])) == [(2, 3), (1, 2), (0, 1)]
-    assert bridge_in_graph(edge2adjencylist([[0, 1], [1, 2], [2, 0], [1, 3], [1, 4], [1, 6], [3, 5], [4, 5]])) == [(1, 6)]
+    assert bridge_in_graph(edge2adjacencylist([[1, 0], [0, 2], [2, 1], [0, 3], [3, 4]])) == [(3, 4), (0, 3)]
+    assert bridge_in_graph(edge2adjacencylist([[0, 1], [1, 2], [2, 3]])) == [(2, 3), (1, 2), (0, 1)]
+    assert bridge_in_graph(edge2adjacencylist([[0, 1], [1, 2], [2, 0], [1, 3], [1, 4], [1, 6], [3, 5], [4, 5]])) == [(1, 6)]
+    
+    assert bridge_in_graph_loop([[0, 1], [1, 2], [2, 0], [1, 3], [1, 4], [1, 6], [3, 5], [4, 5]], 7) == [(6, 1)]
