@@ -57,19 +57,20 @@ def bridge_in_graph_loop(adjacency_list, n_nodes, n_edges, root=0):
     return bridges
 
 
-def dfs_preorder(adjacency_list, root):
+def get_rank(adjacency_list, root):
     # returns valid preorder sequence
     stack = [root]
     marked = set([root])
-    preorder = []
+    rank = {}
     while stack:
         node = stack.pop()
-        preorder.append(node)
+        if len(adjacency_list[node]) == 1:
+            rank[node] = len(rank)
         for ne in adjacency_list[node]:
             if ne not in marked:
                 stack.append(ne)
                 marked.add(ne)
-    return preorder
+    return rank
 
 
 def find(k):
@@ -103,7 +104,7 @@ else:
         shrinked_g[u].append(v)
         shrinked_g[v].append(u)
 
-    rt = -1
+    rt = 0
     leafs = []
     for i in range(N):
         if len(shrinked_g[i]) == 1:
@@ -111,11 +112,7 @@ else:
         elif len(shrinked_g[i]) > 1:
             rt = i
 
-    preorder = dfs_preorder(shrinked_g, rt)
-    rank = [0] * N
-    for i, v in enumerate(preorder):
-        rank[v] = i
-
+    rank = get_rank(shrinked_g, rt)
     leafs.sort(key=lambda x: rank[x])
 
     print((len(leafs)+1) // 2)
